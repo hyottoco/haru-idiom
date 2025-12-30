@@ -2,7 +2,6 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <!-- <meta name="viewport" content="width=device-width,initial-scale=1" /> -->
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 
   <title>ハル熟400</title>
@@ -23,13 +22,17 @@
 
       --btn-radius: 12px;
 
-      /* 復習系の淡い色（統一） */
       --review-bg: #f3f6fb;
       --review-bd: #cfd8e3;
       --review-fg: #334155;
 
       --review-bg-hover: #e9eef7;
       --review-accent: #64748b;
+
+      /* wheel */
+      --wheel-item-h: 44px;
+      --wheel-fade: rgba(255,255,255,0.9);
+      --wheel-fade-dark: rgba(15,17,21,0.85);
     }
 
     body{
@@ -78,7 +81,6 @@
     }
 
     .pill{ cursor: pointer; }
-
     button.small{ cursor: pointer; }
     button.small:active{ transform: translateY(1px); }
 
@@ -100,21 +102,16 @@
     }
     button:active{ transform: translateY(1px); }
 
-    /* ★今回の修正点：アイコン系だけ少し大きく */
-    button.small.toggle{
-      font-size: 18px;
-    }
+    button.small.toggle{ font-size: 18px; }
 
-    /* ★ここに追加（発音ボタンだけ右寄せ） */
     #speakBtn{
       margin-left: auto;
-      margin-right: 4px; /* 微調整 */
+      margin-right: 4px;
     }
 
     .primary{ font-weight: 500; }
     .danger{ border-color:#f2c; }
     .toggle{ border-color:#88c; }
-
     .pill.togglePill{ border-color:#88c; }
 
     .pill input[type="checkbox"]{
@@ -129,36 +126,24 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* =========================================================
-       復習系UI（淡い色で統一）
-       ★重要：チェックON/OFFで背景色は変えない（理想どおり）
-       ★復習開始 / 復習リストに追加 / 復習Reset に適用
-    ========================================================= */
     .reviewUI{
       background: var(--review-bg);
       border-color: var(--review-bd);
       color: var(--review-fg);
       border-radius: 14px;
     }
-
-    /* hover は “マウスがある環境だけ” */
     @media (hover: hover) and (pointer: fine){
       .reviewUI:hover{ background: var(--review-bg-hover); }
     }
-    /* タッチ端末では hover 無効（iPhoneで色が戻らない対策） */
     @media (hover: none){
       .reviewUI:hover{ background: var(--review-bg); }
     }
 
-    /* ★押している間だけ「白くする」(復習Reset用) */
     .pressWhite:active{
       background: #fff;
       border-color: var(--review-bd);
       color: var(--review-fg);
     }
-
-    /* iPhoneで「押したあと色が残る」対策（sticky hover対策の保険）
-       pressWhite は hover を絶対に変えない */
     @media (hover: none){
       .pressWhite:hover{ background: var(--review-bg); }
     }
@@ -202,7 +187,7 @@
     }
 
     .word-no{
-      font-size: 14px;   /* ← No のサイズはここ */
+      font-size: 14px;
       font-weight: 600;
       color: var(--muted);
       line-height: 1;
@@ -279,7 +264,6 @@
       border-color: var(--bd-dark);
       color: #e9e9ea;
     }
-    body.dark button:hover{ background: #252b3a; }
     body.dark .missBox{
       border-color: var(--bd-dark);
       background: rgba(255,255,255,0.03);
@@ -293,31 +277,12 @@
       color: #e5e7eb;
     }
 
-    /* ダーク時の hover（マウス時のみ） */
-    @media (hover: hover) and (pointer: fine){
-      body.dark .reviewUI:hover{
-        background: rgba(255,255,255,0.10);
-      }
-    }
-    @media (hover: none){
-      body.dark .reviewUI:hover{
-        background: rgba(255,255,255,0.06);
-      }
-    }
-
-    /* ダーク時：押してる間だけ少し明るく（真っ白は眩しいので） */
     body.dark .pressWhite:active{
       background: rgba(255,255,255,0.16);
       border-color: var(--bd-dark);
       color: #e5e7eb;
     }
 
-    /* iPhoneのダブルタップ拡大を起こしにくくする */
-    button, label, input, .pill{
-      touch-action: manipulation;
-    }
-
-    /* ★ページタイトル */
     .page-title{
       font-size: 16px;
       font-weight: 700;
@@ -325,32 +290,265 @@
       text-align: center;
       letter-spacing: 0.03em;
     }
+    body.dark .page-title{ color: #e9e9ea; }
 
-    /* ダークモード対応 */
-    body.dark .page-title{
-      color: #e9e9ea;
+    /* =========================================================
+       🎡 ホイール（軽量2D）
+    ========================================================= */
+    .modalOverlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding-left: 14px;
+      padding-right: 14px;
+      padding-top: calc(env(safe-area-inset-top) + 10px);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 14px);
+      z-index: 9999;
     }
+    .modalOverlay.show{ display:flex; }
+
+    .modalSheet{
+      width: min(820px, 100%);
+      border-radius: 18px;
+      border: 1px solid var(--bd);
+      background: #fff;
+      color: #111;
+      box-shadow: 0 12px 40px rgba(0,0,0,.18);
+      overflow: hidden;
+      transform: translateY(8px);
+      animation: sheetIn .16s ease-out forwards;
+      max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px);
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    @keyframes sheetIn{ to{ transform: translateY(0); } }
+    body.dark .modalSheet{
+      background: #171a21;
+      color: #e9e9ea;
+      border-color: var(--bd-dark);
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    }
+
+    .modalHeader{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--bd);
+      gap: 10px;
+    }
+    body.dark .modalHeader{ border-bottom-color: var(--bd-dark); }
+
+    .modalTitle{
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      opacity: .95;
+      user-select: none;
+    }
+
+    .modalHeader .mini{
+      font-size: 14px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--bd);
+      background: transparent;
+      color: inherit;
+    }
+    body.dark .modalHeader .mini{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
+
+    .wheelSearchRow{
+      display:flex;
+      gap:8px;
+      padding: 6px;
+      border-bottom: 1px solid var(--bd);
+    }
+    body.dark .wheelSearchRow{ border-bottom-color: var(--bd-dark); }
+
+    .wheelSearchRow .mini{
+      font-size: 14px;
+      padding: 8px 10px;
+    }
+
+    .wheelSearch{
+      flex: 1;
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: transparent;
+      color: inherit;
+      outline: none;
+    }
+    body.dark .wheelSearch{ border-color: var(--bd-dark); }
+
+    .wheelArea{
+      position: relative;
+      padding: 12px 12px 2px;
+    }
+
+    .wheelViewport{
+      position: relative;
+      height: calc(var(--wheel-item-h) * 7);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: y mandatory;
+      overscroll-behavior: contain;
+      border-radius: 16px;
+      border: 1px solid var(--bd);
+      background: rgba(0,0,0,0.02);
+      touch-action: pan-y;
+    }
+    body.dark .wheelViewport{
+      border-color: var(--bd-dark);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .wheelFadeTop, .wheelFadeBottom{
+      pointer-events: none;
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      height: 44px;
+      z-index: 2;
+    }
+    .wheelFadeTop{
+      top: 12px;
+      background: linear-gradient(to bottom, var(--wheel-fade), rgba(255,255,255,0));
+    }
+    .wheelFadeBottom{
+      bottom: 2px;
+      background: linear-gradient(to top, var(--wheel-fade), rgba(255,255,255,0));
+    }
+    body.dark .wheelFadeTop{
+      background: linear-gradient(to bottom, var(--wheel-fade-dark), rgba(15,17,21,0));
+    }
+    body.dark .wheelFadeBottom{
+      background: linear-gradient(to top, var(--wheel-fade-dark), rgba(15,17,21,0));
+    }
+
+    .wheelCenterLine{
+      pointer-events: none;
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: calc(12px + (var(--wheel-item-h) * 3));
+      height: var(--wheel-item-h);
+      border-top: 1px solid rgba(100,116,139,0.35);
+      border-bottom: 1px solid rgba(100,116,139,0.35);
+      border-radius: 14px;
+      z-index: 3;
+    }
+
+    .wheelList{
+      position: relative;
+      padding: calc(var(--wheel-item-h) * 3) 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .wheelItem{
+      height: var(--wheel-item-h);
+      display:flex;
+      align-items:center;
+      justify-content: center;
+      scroll-snap-align: center;
+      user-select: none;
+      padding: 0 14px;
+    }
+
+    .wheelItemInner{
+      width: 100%;
+      max-width: 92%;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      line-height: 1.15;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      column-gap: 10px;
+      align-items: center;
+    }
+
+    .wheelItemInner .num{
+      font-size: 12px;
+      opacity: .70;
+      font-variant-numeric: tabular-nums;
+      justify-self: start;
+      user-select: none;
+    }
+
+    .wheelItemInner .main{
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .wheelItemInner .ja{
+      display: block;
+      font-size: 12px;
+      opacity: .70;
+      margin-top: 2px;
+      line-height: 1.2;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* ★軽量：選択中っぽい行だけ色付け（3Dなし） */
+    .wheelItem.isActive .wheelItemInner{
+      border-color: rgba(100,116,139,0.25);
+      background: rgba(100,116,139,0.06);
+    }
+
+    .wheelFooter{
+      display:flex;
+      gap:10px;
+      padding: 8px;
+      border-top: 1px solid var(--bd);
+      justify-content: space-between;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+    body.dark .wheelFooter{ border-top-color: var(--bd-dark); }
+
+    .wheelHint{
+      font-size: 12px;
+      opacity: .75;
+      padding: 0 12px 10px;
+      user-select: none;
+      min-height: 1.2em;
+    }
+
+    .mini{
+      font-size: 14px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--bd);
+      background: transparent;
+      color: inherit;
+    }
+    body.dark .mini{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
   </style>
 </head>
 
 <body>
   <div class="card">
-
     <h1 id="pageTitle" class="page-title"></h1>
 
     <div class="topbar">
       <div class="badge" id="progress">0 / 0</div>
-
       <div class="topbar-right">
         <button id="resetBtn" class="small reviewUI" type="button">Reset</button>
-
-        <!-- ★復習Reset：普段は reviewUI の淡色、押してる間だけ白(or明るく) -->
         <button class="small reviewUI pressWhite" id="clearWrongBtn" type="button">復習Reset</button>
       </div>
     </div>
 
     <div class="row">
-      <!-- ★復習開始：チェックON/OFFで背景色は変えない（reviewUIは固定） -->
       <label class="pill togglePill reviewUI" for="wrongOnlyToggle">
         <input type="checkbox" id="wrongOnlyToggle" />
         復習 <span class="count" id="wrongCount">(0)</span>
@@ -358,8 +556,6 @@
 
       <button class="small toggle" id="audioToggle" type="button">🔊</button>
       <button class="small toggle" id="themeToggle" type="button">🌙</button>
-
-      <!-- ★出題順切替（表示も親切版） -->
       <button class="small toggle" id="orderToggle" type="button">🔀 ランダム</button>
     </div>
 
@@ -387,21 +583,52 @@
       <button class="primary" id="nextBtn" type="button">はじめる</button>
     </div>
 
-    <!-- ▼答え合わせ中だけ出る：復習リストに追加
-         ★これも reviewUI で淡色固定（チェックON/OFFで背景色変化なし） -->
     <div class="missBox reviewUI" id="missBox">
       <input type="checkbox" id="missToggle">
       <label class="label" for="missToggle">復習リストに追加</label>
     </div>
 
     <div class="btns">
+      <button id="wheelOpenBtn" type="button">🎡 探す</button>
       <button id="speakBtn" type="button">🔊 発音</button>
     </div>
+  </div>
 
+  <!-- 🎡 モーダル -->
+  <div class="modalOverlay" id="wheelOverlay" aria-hidden="true">
+    <div class="modalSheet" role="dialog" aria-modal="true" aria-labelledby="wheelTitle">
+      <div class="modalHeader">
+        <div class="modalTitle" id="wheelTitle">🎡 単語検索（英or日）</div>
+        <button class="mini" id="wheelCloseBtn" type="button">閉じる</button>
+      </div>
+
+      <div class="wheelSearchRow">
+        <input class="wheelSearch" id="wheelSearchInput" type="search" placeholder="キーワード検索" autocomplete="off" />
+        <button class="mini" id="wheelClearSearchBtn" type="button">クリア</button>
+      </div>
+
+      <div class="wheelArea">
+        <div class="wheelFadeTop"></div>
+        <div class="wheelFadeBottom"></div>
+        <div class="wheelCenterLine"></div>
+
+        <div class="wheelViewport" id="wheelViewport">
+          <ul class="wheelList" id="wheelList"></ul>
+        </div>
+      </div>
+
+      <div class="wheelHint" id="wheelHint"></div>
+
+      <div class="wheelFooter">
+        <button class="mini" id="wheelMoreBtn" type="button">さらに表示</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+          <button class="mini" id="wheelJumpBtn" type="button">この単語へ移動</button>
+        </div>
+      </div>
+    </div>
   </div>
 
 <script>
-
 const VOCAB = [
   { en: "want to ~", ja: "～したい" },
   { en: "a lot of ~", ja: "たくさんの～" },
@@ -805,15 +1032,22 @@ const VOCAB = [
   { en: "a number of ~", ja: "多数の～" }
 ];
 
+// ★検索を速くするための前処理
+for (const v of VOCAB){
+  v._en = String(v.en || "").toLowerCase();
+  v._ja = String(v.ja || "").toLowerCase();
+  v._mix = v._en + "\n" + v._ja;
+  v._enEsc = escapeHtml(v.en);
+  v._jaEsc = escapeHtml(v.ja);
+}
 
 const KEY_AUDIO       = "vocab_app_audio_on_v1";
 const KEY_WRONG_SET   = "vocab_wrong_set_v1";
 const KEY_WRONG_ONLY  = "vocab_wrong_only_v1";
 const KEY_THEME       = "vocab_theme_v1";
 const KEY_RANGE       = "vocab_range_v1";
-
-/* ★追加：出題順モード（random / asc） */
 const KEY_ORDER_MODE  = "vocab_order_mode_v1";
+const KEY_WHEEL_QUERY = "vocab_wheel_query_v1";
 
 function shuffle(arr){
   for (let i = arr.length - 1; i > 0; i--){
@@ -829,39 +1063,29 @@ function loadJSON(key){
     return raw ? JSON.parse(raw) : null;
   }catch{ return null; }
 }
-function clamp(n, min, max){
-  return Math.max(min, Math.min(max, n));
-}
+function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
 function loadRange(){
   const saved = loadJSON(KEY_RANGE);
   const maxN = VOCAB.length;
-
   let from = 1;
   let to = Math.min(10, maxN);
-
   if (saved && typeof saved.from === "number" && typeof saved.to === "number"){
     from = saved.from;
     to = saved.to;
   }
-
   from = clamp(Math.floor(from), 1, maxN);
   to   = clamp(Math.floor(to),   1, maxN);
   if (from > to) [from, to] = [to, from];
-
   return { from, to };
 }
-function saveRange(r){
-  saveJSON(KEY_RANGE, r);
-}
+function saveRange(r){ saveJSON(KEY_RANGE, r); }
 
 function loadTheme(){
   const v = localStorage.getItem(KEY_THEME);
   return (v === "dark" || v === "light") ? v : "light";
 }
-function saveTheme(theme){
-  localStorage.setItem(KEY_THEME, theme);
-}
+function saveTheme(theme){ localStorage.setItem(KEY_THEME, theme); }
 function applyTheme(theme){
   const isDark = theme === "dark";
   document.body.classList.toggle("dark", isDark);
@@ -869,14 +1093,11 @@ function applyTheme(theme){
   if (btn) btn.textContent = isDark ? "☀️" : "🌙";
 }
 
-/* ★追加：出題順モード */
 function loadOrderMode(){
   const v = localStorage.getItem(KEY_ORDER_MODE);
   return (v === "asc" || v === "random") ? v : "random";
 }
-function saveOrderMode(mode){
-  localStorage.setItem(KEY_ORDER_MODE, mode);
-}
+function saveOrderMode(mode){ localStorage.setItem(KEY_ORDER_MODE, mode); }
 function updateOrderUI(){
   const mode = loadOrderMode();
   const btn = document.getElementById("orderToggle");
@@ -899,9 +1120,7 @@ function loadAudioOn(){
   const v = localStorage.getItem(KEY_AUDIO);
   return v === null ? true : v === "1";
 }
-function saveAudioOn(on){
-  localStorage.setItem(KEY_AUDIO, on ? "1" : "0");
-}
+function saveAudioOn(on){ localStorage.setItem(KEY_AUDIO, on ? "1" : "0"); }
 function updateAudioUI(){
   const on = loadAudioOn();
   document.getElementById("audioToggle").textContent = on ? "🔊" : "🔇";
@@ -925,20 +1144,14 @@ function loadWrongSet(){
   const arr = loadJSON(KEY_WRONG_SET);
   return new Set(Array.isArray(arr) ? arr : []);
 }
-function saveWrongSet(set){
-  saveJSON(KEY_WRONG_SET, Array.from(set));
-}
+function saveWrongSet(set){ saveJSON(KEY_WRONG_SET, Array.from(set)); }
 function updateWrongCountUI(){
   const set = loadWrongSet();
   document.getElementById("wrongCount").textContent = `:${set.size}`;
 }
 
-function loadWrongOnly(){
-  return localStorage.getItem(KEY_WRONG_ONLY) === "1";
-}
-function saveWrongOnly(on){
-  localStorage.setItem(KEY_WRONG_ONLY, on ? "1" : "0");
-}
+function loadWrongOnly(){ return localStorage.getItem(KEY_WRONG_ONLY) === "1"; }
+function saveWrongOnly(on){ localStorage.setItem(KEY_WRONG_ONLY, on ? "1" : "0"); }
 
 function getActiveStateKey(){
   const { from, to } = loadRange();
@@ -962,19 +1175,11 @@ function getPoolIndices(){
   return ranged.filter(i => set.has(VOCAB[i].en));
 }
 
-/* ★差し替え：random / asc の切替に対応 */
 function freshStateForPool(poolIdxs){
   const mode = loadOrderMode();
-
   let order = [...Array(poolIdxs.length).keys()];
-
-  if (mode === "random"){
-    order = shuffle(order);
-  } else {
-    // poolIdxs が小さい順（若い番号順）に並ぶようにする
-    order.sort((a, b) => poolIdxs[a] - poolIdxs[b]);
-  }
-
+  if (mode === "random") order = shuffle(order);
+  else order.sort((a, b) => poolIdxs[a] - poolIdxs[b]);
   return { poolIdxs, order, index: 0, phase: 0 };
 }
 
@@ -988,7 +1193,6 @@ function loadState(){
 
   const poolNow = getPoolIndices();
   if (st.poolIdxs.length !== poolNow.length) return null;
-
   return st;
 }
 function saveState(st){
@@ -1062,12 +1266,9 @@ function nextAction(){
     return;
   }
 
-  if (st.phase === 0){
-    st.phase = 1;
-  } else {
-    st.phase = 0;
-    st.index += 1;
-  }
+  if (st.phase === 0) st.phase = 1;
+  else { st.phase = 0; st.index += 1; }
+
   saveState(st);
   setUI(st);
 }
@@ -1080,8 +1281,262 @@ function resetAll(){
   setUI(st);
 }
 
-function init(){
+/* =========================================================
+   🎡 ホイール（軽量2D＋ページング）
+========================================================= */
+const wheel = {
+  overlay: null,
+  viewport: null,
+  list: null,
+  search: null,
+  hint: null,
+  btnJump: null,
+  closeBtn: null,
+  clearBtn: null,
+  openBtn: null,
+  moreBtn: null,
 
+  pool: [],
+  filtered: [],
+  activeIndex: 0,
+
+  // ページング
+  pageSize: 99999,     // ★最初に表示する最大件数（SE2向け）
+  renderedCount: 0,  // 現在描画済み件数
+  lastQuery: "",
+};
+
+function loadWheelQuery(){
+  const v = localStorage.getItem(KEY_WHEEL_QUERY);
+  return (typeof v === "string") ? v : "";
+}
+function saveWheelQuery(q){ localStorage.setItem(KEY_WHEEL_QUERY, q); }
+
+function buildWheelPool(){
+  const poolIdxs = getPoolIndices();
+  const arranged = poolIdxs.slice().sort((a,b)=>a-b);
+  return arranged.map(vocabIndex => {
+    const v = VOCAB[vocabIndex];
+    return {
+      vocabIndex,
+      _en: v._en,
+      _mix: v._mix,
+      enEsc: v._enEsc,
+      jaEsc: v._jaEsc
+    };
+  });
+}
+
+function wheelFilter(list, q){
+  const query = String(q || "").trim().toLowerCase();
+  if (!query) return list.slice();
+
+  const starts = [];
+  const contains = [];
+  for (const it of list){
+    if (it._en.startsWith(query)) starts.push(it);
+    else if (it._mix.includes(query)) contains.push(it);
+  }
+  return starts.concat(contains);
+}
+
+function wheelRender(resetPaging=true){
+  const q = wheel.search.value;
+  saveWheelQuery(q);
+  wheel.lastQuery = q;
+
+  wheel.pool = buildWheelPool();
+  wheel.filtered = wheelFilter(wheel.pool, q);
+
+  // 初期位置（現在の単語が含まれていればそこへ）
+  const st = loadState();
+  const cur = st ? getCurrentItem(st) : null;
+  let idx = 0;
+  if (cur){
+    const vi = cur.vocabIndex;
+    const found = wheel.filtered.findIndex(x => x.vocabIndex === vi);
+    if (found >= 0) idx = found;
+  }
+  wheel.activeIndex = clamp(idx, 0, Math.max(0, wheel.filtered.length - 1));
+
+  if (resetPaging){
+    wheel.renderedCount = 0;
+    wheel.list.innerHTML = "";
+  }
+
+  if (wheel.filtered.length === 0){
+    wheel.list.innerHTML =
+      `<li class="wheelItem isActive" data-index="0">
+         <div class="wheelItemInner" style="opacity:.75;border-color:transparent;">一致する単語がありません</div>
+       </li>`;
+    wheel.hint.textContent = "検索条件を変えてみてください。";
+    wheel.moreBtn.style.display = "none";
+    return;
+  }
+
+  // 追加描画（最大 pageSize 件ずつ）
+  const from = wheel.renderedCount;
+  const to = Math.min(wheel.renderedCount + wheel.pageSize, wheel.filtered.length);
+
+  let html = "";
+  for (let i = from; i < to; i++){
+    const it = wheel.filtered[i];
+    html +=
+      `<li class="wheelItem" data-index="${i}">
+         <div class="wheelItemInner">
+           <div class="num">${it.vocabIndex + 1}</div>
+           <div>
+             <div class="main">${it.enEsc}</div>
+             <span class="ja">${it.jaEsc}</span>
+           </div>
+         </div>
+       </li>`;
+  }
+
+  // 一括append（分割より安定して速いことが多い）
+  wheel.list.insertAdjacentHTML("beforeend", html);
+
+  wheel.renderedCount = to;
+
+  wheel.hint.textContent = `表示: ${wheel.filtered.length} 件（描画: ${wheel.renderedCount}/${wheel.filtered.length}）`;
+
+  // 「さらに表示」ボタン
+  wheel.moreBtn.style.display = (wheel.renderedCount < wheel.filtered.length) ? "inline-flex" : "none";
+
+  // アクティブ行の見た目更新
+  wheelUpdateActiveClass();
+
+  // 初回のみ：該当位置へ
+  if (resetPaging){
+    requestAnimationFrame(() => {
+      // activeIndexがまだ描画されていないなら、そのindexまで出す
+      while (wheel.activeIndex >= wheel.renderedCount && wheel.renderedCount < wheel.filtered.length){
+        wheelRender(false);
+      }
+      wheelScrollToIndex(wheel.activeIndex, false);
+    });
+  }
+}
+
+function wheelScrollToIndex(i, smooth){
+  const items = wheel.list.querySelectorAll(".wheelItem");
+  if (!items.length) return;
+
+  const idx = clamp(i, 0, items.length - 1);
+  const target = items[idx];
+  const top = target.offsetTop + (target.offsetHeight/2) - (wheel.viewport.clientHeight/2);
+  wheel.viewport.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
+  wheel.activeIndex = idx;
+  wheelUpdateActiveClass();
+}
+
+function wheelPickNearest(){
+  const items = wheel.list.querySelectorAll(".wheelItem");
+  if (!items.length) return 0;
+
+  const centerY = wheel.viewport.scrollTop + wheel.viewport.clientHeight/2;
+  let best = 0;
+  let bestDist = Infinity;
+
+  items.forEach((el, i) => {
+    const y = el.offsetTop + el.offsetHeight/2;
+    const d = Math.abs(y - centerY);
+    if (d < bestDist){
+      bestDist = d;
+      best = i;
+    }
+  });
+  return best;
+}
+
+function wheelSnap(){
+  const i = wheelPickNearest();
+  wheel.activeIndex = i;
+  wheelScrollToIndex(i, true);
+}
+
+function wheelUpdateActiveClass(){
+  const items = wheel.list.querySelectorAll(".wheelItem");
+  items.forEach((li, idx) => {
+    li.classList.toggle("isActive", idx === wheel.activeIndex);
+  });
+}
+
+function wheelOpen(){
+  wheel.overlay.classList.add("show");
+  wheel.overlay.setAttribute("aria-hidden", "false");
+
+  wheel.search.value = loadWheelQuery() || "";
+  wheel.list.innerHTML = "";
+  wheel.renderedCount = 0;
+
+  // 背景スクロール停止（iPhone対策）
+  document.body.style.overflow = "hidden";
+
+  // 先に表示
+  wheel.hint.textContent = "準備中…";
+  wheelRender(true);
+
+  setTimeout(() => {
+    wheel.search.focus({ preventScroll: true });
+  }, 120);
+}
+
+function wheelClose(){
+  wheel.overlay.classList.remove("show");
+  wheel.overlay.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+function wheelJumpToSelected(){
+  if (!wheel.filtered.length) return;
+  const picked = wheel.filtered[clamp(wheel.activeIndex, 0, wheel.filtered.length - 1)];
+  if (!picked) return;
+
+  const poolIdxs = getPoolIndices();
+  if (!poolIdxs.length) return;
+
+  const st = loadState() || freshStateForPool(poolIdxs);
+
+  const poolNow = getPoolIndices();
+  if (!Array.isArray(st.poolIdxs) || st.poolIdxs.length !== poolNow.length){
+    st.poolIdxs = poolNow;
+    st.order = freshStateForPool(poolNow).order;
+  }
+
+  let foundIndex = -1;
+  for (let i=0; i<st.order.length; i++){
+    const poolIndex = st.poolIdxs[ st.order[i] ];
+    if (poolIndex === picked.vocabIndex){
+      foundIndex = i;
+      break;
+    }
+  }
+
+  if (foundIndex >= 0){
+    st.index = foundIndex;
+    st.phase = 0;
+    saveState(st);
+    setUI(st);
+    try{ speakEnglish(VOCAB[picked.vocabIndex].en); }catch{}
+  }
+
+  wheelClose();
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* =========================================================
+   init
+========================================================= */
+function init(){
   document.getElementById("pageTitle").textContent = document.title;
 
   if (!VOCAB.length){
@@ -1097,7 +1552,6 @@ function init(){
     applyTheme(next);
   });
 
-  /* ★出題順UI初期化 */
   updateOrderUI();
 
   if (window.speechSynthesis){
@@ -1136,6 +1590,10 @@ function init(){
 
     updateWrongCountUI();
     setUI(st);
+
+    if (wheel.overlay.classList.contains("show")){
+      wheelRender(true);
+    }
   }
 
   rangeFromEl.addEventListener("change", onRangeChange);
@@ -1154,6 +1612,10 @@ function init(){
 
     updateWrongCountUI();
     setUI(st);
+
+    if (wheel.overlay.classList.contains("show")){
+      wheelRender(true);
+    }
   });
 
   document.getElementById("missToggle").addEventListener("change", (e) => {
@@ -1168,6 +1630,10 @@ function init(){
 
     saveWrongSet(set);
     updateWrongCountUI();
+
+    if (wheel.overlay.classList.contains("show")){
+      wheelRender(true);
+    }
   });
 
   document.getElementById("clearWrongBtn").addEventListener("click", () => {
@@ -1178,6 +1644,10 @@ function init(){
     const st = freshStateForPool(pool);
     saveState(st);
     setUI(st);
+
+    if (wheel.overlay.classList.contains("show")){
+      wheelRender(true);
+    }
   });
 
   const pool = getPoolIndices();
@@ -1209,7 +1679,6 @@ function init(){
     }
   });
 
-  /* ★追加：出題順切替（いつでも切替、復習リストには影響なし） */
   document.getElementById("orderToggle").addEventListener("click", () => {
     const now = loadOrderMode();
     const next = (now === "random") ? "asc" : "random";
@@ -1220,7 +1689,70 @@ function init(){
     const st2 = freshStateForPool(pool2);
     saveState(st2);
     setUI(st2);
+
+    if (wheel.overlay.classList.contains("show")){
+      wheelRender(true);
+    }
   });
+
+  /* ===== 🎡 ホイール要素を紐づけ ===== */
+  wheel.overlay = document.getElementById("wheelOverlay");
+  wheel.viewport = document.getElementById("wheelViewport");
+  wheel.list = document.getElementById("wheelList");
+  wheel.search = document.getElementById("wheelSearchInput");
+  wheel.hint = document.getElementById("wheelHint");
+  wheel.btnJump = document.getElementById("wheelJumpBtn");
+  wheel.closeBtn = document.getElementById("wheelCloseBtn");
+  wheel.clearBtn = document.getElementById("wheelClearSearchBtn");
+  wheel.openBtn = document.getElementById("wheelOpenBtn");
+  wheel.moreBtn = document.getElementById("wheelMoreBtn");
+
+  wheel.openBtn.addEventListener("click", wheelOpen);
+  wheel.closeBtn.addEventListener("click", wheelClose);
+  wheel.btnJump.addEventListener("click", wheelJumpToSelected);
+
+  wheel.clearBtn.addEventListener("click", () => {
+    wheel.search.value = "";
+    saveWheelQuery("");
+    wheelRender(true);
+  });
+
+  // 「さらに表示」
+  wheel.moreBtn.addEventListener("click", () => {
+    wheelRender(false);
+  });
+
+  // オーバーレイ背景タップで閉じる
+  wheel.overlay.addEventListener("click", (e) => {
+    if (e.target === wheel.overlay) wheelClose();
+  });
+
+  // 検索：デバウンス（軽量）
+  let t = 0;
+  wheel.search.addEventListener("input", () => {
+    clearTimeout(t);
+    t = setTimeout(() => wheelRender(true), 180);
+  });
+
+  // クリック：イベント委譲（軽量）
+  wheel.list.addEventListener("click", (e) => {
+    const li = e.target.closest(".wheelItem");
+    if (!li) return;
+    const idx = parseInt(li.dataset.index || "0", 10);
+    if (!Number.isFinite(idx)) return;
+
+    // まだ描画されてない先をタップしたケースはない（タップできないので）
+    wheelScrollToIndex(idx, true);
+  });
+
+  // スクロール停止後だけスナップ（軽い）
+  let snapTimer = 0;
+  wheel.viewport.addEventListener("scroll", () => {
+    clearTimeout(snapTimer);
+    snapTimer = setTimeout(() => {
+      if (wheel.overlay.classList.contains("show")) wheelSnap();
+    }, 140);
+  }, { passive: true });
 }
 
 init();
