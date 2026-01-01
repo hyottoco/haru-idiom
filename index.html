@@ -950,16 +950,20 @@ function speak(text){
 
   try{ speechSynthesis.cancel(); }catch(e){}
 
+  // ★ iPad対策：まだ取れてなければ毎回拾い直す
+  if(!cachedEnglishVoice){
+    cachedEnglishVoice = pickEnglishVoice();
+  }
+
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "en-US";
   u.rate = clamp(Number(state.rate) || 1.0, 0.6, 1.4);
 
-  if (cachedEnglishVoice) {
-    u.voice = cachedEnglishVoice; // ★ここが効く
-  }
+  if (cachedEnglishVoice) u.voice = cachedEnglishVoice;
 
   speechSynthesis.speak(u);
 }
+
 
 
 function speakCurrent(){
@@ -1546,6 +1550,12 @@ document.addEventListener("keydown", (e) => { if(e.key === "Escape" && wheelOver
 
   syncRangeConstraints();
   render();
+
+  // ★ iOS/iPadOS対策：voicesを取得しに行く（空配列対策）
+  if ("speechSynthesis" in window) {
+    cachedEnglishVoice = pickEnglishVoice();
+    try { speechSynthesis.getVoices(); } catch(e) {}
+  }
 })();
 </script>
 </body>
