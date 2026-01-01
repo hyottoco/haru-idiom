@@ -21,6 +21,7 @@
 
       --btn-radius: 12px;
 
+      /* 復習系の淡い色（統一） */
       --review-bg: #f3f6fb;
       --review-bd: #cfd8e3;
       --review-fg: #334155;
@@ -51,6 +52,7 @@
       border-radius: 14px;
       background: var(--card);
       transition: background .2s ease, border-color .2s ease;
+      position: relative;
     }
 
     .row{
@@ -61,7 +63,7 @@
       margin-top: 10px;
     }
 
-    /* ✅ 復習行：左(復習) / 右(🔊🌙🔀) に分ける */
+    /* ✅ 復習行：左(復習) / 右(ボタン群) */
     .reviewRow{
       display:flex;
       align-items:center;
@@ -103,6 +105,8 @@
       /* ✅ 縦の隙間を詰める */
       padding-top: 6px;
       padding-bottom: 6px;
+      padding-left: 8px;
+      padding-right: 8px;   /* ← ここを小さく */
     }
 
     .pill{ cursor: pointer; }
@@ -207,11 +211,16 @@
       text-align: left;
     }
 
-    .rangeStack{
-      display:flex;
-      align-items: center;
-      gap: 15px;
+    /* ✅ 範囲入力（No 〜）の上下ステップ（スピナー）を消す */
+    .rangeInput::-webkit-outer-spin-button,
+    .rangeInput::-webkit-inner-spin-button{
+      -webkit-appearance: none;
+      margin: 0;
     }
+    .rangeInput[type="number"]{
+      appearance: textfield;
+    }
+
 
     .word-no{
       font-size: 14px;
@@ -244,7 +253,7 @@
     }
 
     .meaning{
-      font-size: 18px;
+      font-size: 20px;
       margin: 10px 0 0;
       min-height: 40px;
       word-break: break-word;
@@ -333,6 +342,8 @@
       background: transparent;
       user-select:none;
       min-width: 20px;
+      width: fit-content;
+      flex: 0 0 auto;   /* 念のため（伸び抑制） */
     }
     body.dark .speedBox{
       border-color: var(--bd-dark);
@@ -340,7 +351,7 @@
       color: #d6d6d8;
     }
     .speedBox input[type="range"]{
-      width: 60px;
+      width: 48px;
       display: block;
       margin: 0;
     }
@@ -368,9 +379,68 @@
       flex-wrap: nowrap;
       min-width: 0;
     }
+
     .searchRow #speakBtn{
       margin-left: 0; /* この行だけ */
     }
+
+
+
+    /* ✅ Auto表示時間（探すの下段） */
+    .autoTimeRow{
+      margin-top: 8px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap: nowrap;          /* ← 1行固定 */
+    }
+
+    .autoTimeBadge{
+      flex: 0 0 auto;      /* 伸びない */
+      width: fit-content;  /* 中身ぴったり */
+      display:flex;
+      align-items:center;
+      gap:6px;
+      flex-wrap: nowrap;          /* ← 中も1行固定 */
+      overflow: hidden;           /* ← はみ出し防止 */
+    }
+
+    .msInput{
+      width: 2.5em;               /* ← 4桁分 */
+      padding: 4px 8px;
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      font-size: 14px;            /* ← 14px */
+      background: transparent;
+      color: inherit;
+    }
+
+    /* ✅ number入力の上下ステップ（スピナー）を消す */
+    .msInput::-webkit-outer-spin-button,
+    .msInput::-webkit-inner-spin-button{
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .msInput[type="number"]{
+      appearance: textfield;
+    }
+
+
+    body.dark .msInput{ border-color: var(--bd-dark); }
+
+    .miniLbl{ font-size: 13px; opacity: .85; }
+    .unit{ font-size: 12px; opacity: .75; }
+
+    /* ✅ 初期値ボタンを小さく（button.small より強く） */
+    button.small.miniBtn{
+      font-size: 14px;   /* 好みで 10〜13px */
+      padding: 6px 8px;  /* 好みで調整 */
+      border-radius: 999px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+
 
     /* PC/iPadではカードを細くして縦長に見せる */
     @media (min-width: 768px){
@@ -435,11 +505,11 @@
       padding-bottom: 12px;
     }
 
-    /* ✅ 2行目（復習・🔊・🌙・🔀）を同じ高さで少し大きく */
+    /* ✅ 2行目（復習・右ボタン群）を同じ高さで少し大きく */
     .reviewRow .pill,
     .reviewRow button.small{
-      padding-top: 12px;     /* ← 高さを出す */
-      padding-bottom: 12px; /* ← 高さを出す */
+      padding-top: 12px;
+      padding-bottom: 12px;
     }
 
     #resetBtn, #clearWrongBtn { font-size: 16px; }
@@ -447,9 +517,66 @@
     /* ✅ 最下行（探す・発音）だけ文字を少し小さく */
     .searchRow > button,
     .searchRow-right > button{
-      font-size: 14px;   /* ← 好みで 13〜15px */
+      font-size: 14px;
     }
 
+    /* ✅ WakeLock状態表示（小さく） */
+    .wakeBadge{
+      position:absolute;
+      right: 10px;
+      bottom: 10px;
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--bd);
+      background: rgba(255,255,255,0.75);
+      color: inherit;
+      user-select:none;
+      display:none;
+    }
+    body.dark .wakeBadge{
+      border-color: var(--bd-dark);
+      background: rgba(0,0,0,0.25);
+    }
+    .wakeBadge.show{ display:inline-flex; gap:8px; align-items:center; }
+    .wakeDot{
+      width: 7px; height: 7px; border-radius: 999px;
+      background: #999;
+      display:inline-block;
+    }
+    .wakeDot.on{ background: #22c55e; }
+    .wakeDot.off{ background: #ef4444; }
+
+    /* ✅ 範囲 + Auto を横並び、現在Noを下へ（grid版） */
+    .rangeWrap{
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      row-gap: 6px;
+      column-gap: 10px;
+    }
+
+    /* ✅ rangeBadge を grid の伸び（stretch）から外して、中身の幅に合わせる */
+    .rangeBadge{
+      justify-self: start;     /* ← これが本命 */
+      width: fit-content;      /* ← 念のため（iOSでも効きやすい） */
+    }
+
+
+    .rangeTop{ grid-column: 1 / 3; display: contents; }
+    .rangeBadge{ grid-column: 1; }
+    #autoBtn{ grid-column: 2; white-space: nowrap; }
+    .rangeNow{
+      grid-column: 2;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding-left: 2px;
+    }
+    @media (max-width: 360px){
+      .rangeWrap{ grid-template-columns: 1fr; }
+      #autoBtn, .rangeNow{ grid-column: 1; }
+    }
   </style>
 </head>
 
@@ -479,15 +606,24 @@
     </div>
 
     <div class="row">
-      <div class="rangeStack">
-        <label class="badge" style="display:flex; gap:8px; align-items:center;">
-          No
-          <input id="rangeFrom" class="rangeInput" type="number" min="1" value="1">
-          〜
-          <input id="rangeTo" class="rangeInput" type="number" min="1" value="10">
-        </label>
-        <span class="word-no">No</span>
-        <span id="wordNumHeader" class="word-num-header"></span>
+      <div class="rangeWrap">
+        <!-- 上段：範囲 + Auto -->
+        <div class="rangeTop">
+          <label class="badge rangeBadge">
+            No
+            <input id="rangeFrom" class="rangeInput" type="number" min="1">
+            〜
+            <input id="rangeTo" class="rangeInput" type="number" min="1">
+          </label>
+
+          <button class="small toggle" id="autoBtn" type="button">▶︎ Auto</button>
+        </div>
+
+        <!-- 下段：現在の単語No（Autoの下に来る） -->
+        <div class="rangeNow">
+          <span class="word-no">No</span>
+          <span id="wordNumHeader" class="word-num-header"></span>
+        </div>
       </div>
     </div>
 
@@ -518,6 +654,29 @@
 
         <button id="speakBtn" type="button">🔊 発音</button>
       </div>
+    </div>
+
+    <!-- ✅ 探すボタンの下段：time（1行に収める） -->
+    <div class="row autoTimeRow">
+      <div class="badge autoTimeBadge">
+        ▶︎ms:
+        <span class="miniLbl">英</span>
+        <input id="autoEnMs" class="msInput" type="number" min="200" max="9999" step="100">
+        <!-- <span class="unit">ms</span> -->
+        <span class="unit">:</span>
+        <span class="miniLbl">日</span>
+        <input id="autoJaMs" class="msInput" type="number" min="200" max="9999" step="100">
+        <!-- <span class="unit">ms</span> -->
+      </div>
+
+      <button class="small miniBtn reviewUI pressWhite" id="autoTimeResetBtn" type="button">初期値</button>
+    </div>
+
+
+    <!-- ✅ WakeLockステータス -->
+    <div class="wakeBadge" id="wakeBadge" title="Auto中はスリープしにくくします（対応ブラウザのみ）">
+      <span class="wakeDot off" id="wakeDot"></span>
+      <span id="wakeText">Wake: OFF</span>
     </div>
   </div>
 
@@ -1001,6 +1160,7 @@ const wrongCount = $("wrongCount");
 const missBox = $("missBox");
 const missToggle = $("missToggle");
 
+const autoBtn = $("autoBtn");
 const audioToggle = $("audioToggle");
 const themeToggle = $("themeToggle");
 const orderToggle = $("orderToggle");
@@ -1015,6 +1175,16 @@ const speakBtn = $("speakBtn");
 const rateRange = $("rateRange");
 const rateLabel = $("rateLabel");
 
+/* ✅ Auto表示時間UI */
+const autoEnMsInput = $("autoEnMs");
+const autoJaMsInput = $("autoJaMs");
+const autoTimeResetBtn = $("autoTimeResetBtn");
+
+/* Wake lock UI */
+const wakeBadge = $("wakeBadge");
+const wakeDot = $("wakeDot");
+const wakeText = $("wakeText");
+
 /* wheel modal */
 const wheelOverlay = $("wheelOverlay");
 const wheelCloseBtn = $("wheelCloseBtn");
@@ -1027,9 +1197,9 @@ const wheelJumpBtn = $("wheelJumpBtn");
 const wheelHint = $("wheelHint");
 
 /* =========================
-   状態（✅ phase方式に修正）
+   状態（phase方式）
 ========================= */
-const APP_KEY = "ei_idiom_state_v2"; // ←v1だと旧保存が混ざるので v2 推奨
+const APP_KEY = "ei_idiom_state_v3";
 
 const state = {
   idx: 0,
@@ -1045,8 +1215,14 @@ const state = {
 
   rate: 1.0,
 
-  started: false,  // ✅ はじめる押したか
-  phase: 0         // ✅ 0:出題  1:答え
+  started: false,
+  phase: 0,     // 0:出題  1:答え
+
+  autoOn: false, // ✅ Auto運転中か
+
+  /* ✅ Auto表示時間（ms） */
+  autoEnMs: 1000,
+  autoJaMs: 1500,
 };
 
 function loadState(){
@@ -1066,6 +1242,11 @@ function loadState(){
 
   if(typeof saved.started === "boolean") state.started = saved.started;
   if(typeof saved.phase === "number") state.phase = saved.phase;
+
+  if(typeof saved.autoOn === "boolean") state.autoOn = saved.autoOn;
+
+  if(typeof saved.autoEnMs === "number") state.autoEnMs = saved.autoEnMs;
+  if(typeof saved.autoJaMs === "number") state.autoJaMs = saved.autoJaMs;
 }
 function saveState(){ LS.set(APP_KEY, state); }
 
@@ -1128,12 +1309,82 @@ function speakCurrent(){
 }
 
 /* =========================
-   UI更新（✅ setUI相当）
+   ✅ Wake Lock（スリープ対策）
 ========================= */
+let wakeLockSentinel = null;
+let wakeKeepAliveTimer = 0;
+
+function setWakeUI(on, reason){
+  wakeBadge.classList.toggle("show", !!state.autoOn);
+  wakeDot.classList.toggle("on", !!on);
+  wakeDot.classList.toggle("off", !on);
+  wakeText.textContent = on ? "Wake: ON" : "Wake: OFF";
+  if(reason && state.autoOn){
+    wakeBadge.title = reason;
+  }
+}
+
+async function requestWakeLock(){
+  setWakeUI(false, "WakeLockを取得中…");
+
+  try{
+    if("wakeLock" in navigator && navigator.wakeLock && navigator.wakeLock.request){
+      wakeLockSentinel = await navigator.wakeLock.request("screen");
+      setWakeUI(true, "WakeLock: Screen Wake Lock APIで維持中");
+
+      wakeLockSentinel.addEventListener("release", () => {
+        wakeLockSentinel = null;
+        if(state.autoOn && document.visibilityState === "visible"){
+          requestWakeLock().catch(()=>{});
+        }else{
+          setWakeUI(false, "WakeLock: OFF");
+        }
+      });
+
+      return;
+    }
+  }catch(e){
+    // フォールバックへ
+  }
+
+  clearInterval(wakeKeepAliveTimer);
+  wakeKeepAliveTimer = setInterval(() => { void Date.now(); }, 25_000);
+
+  setWakeUI(false, "このブラウザはWakeLock非対応の可能性があります（iPhone Safari等）。Auto中は時々画面をタップすると維持しやすいです。");
+}
+
+async function releaseWakeLock(){
+  try{
+    if(wakeLockSentinel){
+      await wakeLockSentinel.release();
+    }
+  }catch(e){}
+  wakeLockSentinel = null;
+
+  if(wakeKeepAliveTimer){
+    clearInterval(wakeKeepAliveTimer);
+    wakeKeepAliveTimer = 0;
+  }
+  setWakeUI(false, "WakeLock: OFF");
+}
+
+document.addEventListener("visibilitychange", () => {
+  if(!state.autoOn) return;
+  if(document.visibilityState === "visible"){
+    requestWakeLock().catch(()=>{});
+  }
+});
+
+/* =========================
+   UI更新
+========================= */
+function updateAutoBtn(){
+  autoBtn.textContent = state.autoOn ? "⏸ Auto" : "▶︎ Auto";
+}
+
 function updateTopUI(){
   const total = state.shuffled.length;
 
-  // progress
   if(!state.started){
     progressEl.textContent = `0 / ${total}`;
   }else{
@@ -1141,28 +1392,29 @@ function updateTopUI(){
     progressEl.textContent = `${cur} / ${total}`;
   }
 
-  // No（通し番号）
   const real = currentRealIndex();
   wordNumHeader.textContent = (!state.started || real === null) ? "" : String(real + 1);
 
-  // range inputs
   rangeFrom.value = String(state.rangeFrom);
   rangeTo.value = String(state.rangeTo);
 
-  // toggles
   wrongOnlyToggle.checked = !!state.wrongOnly;
   orderToggle.textContent = state.orderRandom ? "🔀" : "🔢";
   audioToggle.textContent = state.audioOn ? "🔊" : "🔇";
   themeToggle.textContent = state.dark ? "🌙" : "☀️";
 
-  // wrong count
   const base = inRangeIndices();
   const cnt = base.filter(i => state.wrongSet[i]).length;
   wrongCount.textContent = `(${cnt})`;
 
-  // speed
   rateRange.value = String(state.rate);
   rateLabel.textContent = `${state.rate.toFixed(1)}x`;
+
+  // ✅ Auto時間UI
+  autoEnMsInput.value = String(state.autoEnMs);
+  autoJaMsInput.value = String(state.autoJaMs);
+
+  updateAutoBtn();
 }
 
 function render(){
@@ -1170,12 +1422,11 @@ function render(){
 
   const real = currentRealIndex();
   updateTopUI();
-  // ✅ どのフェーズでも「今の単語」の復習ON/OFF表示に同期する
+
   if(real !== null){
     missToggle.checked = !!state.wrongSet[real];
   }
 
-  // 出題がない
   if(real === null){
     wordTextEl.textContent = "リストが空です";
     meaningEl.textContent = "範囲を広げるか、「復習」をOFFにするか、復習リストを登録してね";
@@ -1188,7 +1439,6 @@ function render(){
     return;
   }
 
-  // まだ開始前
   if(!state.started){
     wordTextEl.textContent = "Ready Steady GO!";
     meaningEl.textContent = "";
@@ -1199,17 +1449,14 @@ function render(){
     return;
   }
 
-  // 開始後
   const item = VOCAB[real];
   wordTextEl.textContent = item.en;
 
   if(state.phase === 0){
-    // ✅ 出題
     meaningEl.textContent = "";
     nextBtn.textContent = "日本語訳を確認（答え合わせ）";
     missBox.classList.remove("show");
   }else{
-    // ✅ 答え
     meaningEl.textContent = item.ja;
     nextBtn.textContent = "正解だったかな？ 次の単語へ！";
     missBox.classList.add("show");
@@ -1220,29 +1467,37 @@ function render(){
 }
 
 /* =========================
-   操作（✅ 2段階）
+   操作（2段階）
 ========================= */
+function stopAuto(){
+  state.autoOn = false;
+  if(autoTimer) clearTimeout(autoTimer);
+  autoTimer = 0;
+  updateAutoBtn();
+  saveState();
+  releaseWakeLock().catch(()=>{});
+}
+
 function startOrAdvance(){
+  stopAuto(); // ✅ 手動操作でAuto停止
+
   const real = currentRealIndex();
   if(real === null) { render(); return; }
 
-  // はじめる
   if(!state.started){
     state.started = true;
     state.phase = 0;
     render();
-    speakCurrent();   // ✅ ここでだけ発音
+    speakCurrent();
     return;
   }
 
-  // 出題→答え合わせ
   if(state.phase === 0){
     state.phase = 1;
     render();
     return;
   }
 
-  // 答え→次の単語（phaseを0に戻す）
   if(state.idx >= state.shuffled.length - 1){
     state.idx = 0;
   }else{
@@ -1250,11 +1505,11 @@ function startOrAdvance(){
   }
   state.phase = 0;
   render();
-  speakCurrent();     // ✅ 次の問題に入った瞬間だけ発音
+  speakCurrent();
 }
 
-
 function hardReset(){
+  stopAuto();
   state.idx = 0;
   state.started = false;
   state.phase = 0;
@@ -1263,8 +1518,8 @@ function hardReset(){
 }
 
 function clearWrong(){
+  stopAuto();
   state.wrongSet = {};
-  // 復習モード中に空になったら詰むので作り直し
   buildOrder();
   state.idx = 0;
   state.started = false;
@@ -1272,11 +1527,19 @@ function clearWrong(){
   render();
 }
 
-function applyRangeFromInputs(){
-  const a = Number(rangeFrom.value || 1);
-  const b = Number(rangeTo.value || 1);
-  state.rangeFrom = clamp(a, 1, VOCAB.length);
-  state.rangeTo   = clamp(b, 1, VOCAB.length);
+function applyFromInput(){
+  stopAuto();
+
+  let from = Number(rangeFrom.value || 1);
+  let to   = Number(rangeTo.value   || 1);
+
+  from = clamp(from, 1, VOCAB.length);
+
+  // ✅ 〇は □ を超えられない
+  if(from > to) from = to;
+
+  state.rangeFrom = from;
+  rangeFrom.value = String(from);
 
   buildOrder();
   state.idx = 0;
@@ -1284,6 +1547,125 @@ function applyRangeFromInputs(){
   state.phase = 0;
   render();
 }
+
+function applyToInput(){
+  stopAuto();
+
+  let from = Number(rangeFrom.value || 1);
+  let to   = Number(rangeTo.value   || 1);
+
+  to = clamp(to, 1, VOCAB.length);
+
+  // ✅ □ は 〇 未満にできない
+  if(to < from) to = from;
+
+  state.rangeTo = to;
+  rangeTo.value = String(to);
+
+  buildOrder();
+  state.idx = 0;
+  state.started = false;
+  state.phase = 0;
+  render();
+}
+
+
+
+/* =========================
+   ✅ Auto運転（表示時間をUIで変更）
+========================= */
+let autoTimer = 0;
+
+function scheduleAuto(ms){
+  if(autoTimer) clearTimeout(autoTimer);
+  autoTimer = setTimeout(autoTick, ms);
+}
+
+function startAuto(){
+  const real = currentRealIndex();
+  if(real === null) return;
+
+  state.autoOn = true;
+  updateAutoBtn();
+  saveState();
+
+  requestWakeLock().catch(()=>{});
+  setWakeUI(!!wakeLockSentinel, wakeBadge.title);
+
+  autoTick();
+}
+
+function autoTick(){
+  if(!state.autoOn) return;
+
+  const real = currentRealIndex();
+  if(real === null){
+    stopAuto();
+    render();
+    return;
+  }
+
+  // 未開始なら開始（英語表示）→英の時間待つ
+  if(!state.started){
+    state.started = true;
+    state.phase = 0;
+    render();
+    speakCurrent();
+    scheduleAuto(state.autoEnMs);
+    return;
+  }
+
+  // 英語 → 和訳（和の時間待つ）
+  if(state.phase === 0){
+    state.phase = 1;
+    render();
+    scheduleAuto(state.autoJaMs);
+    return;
+  }
+
+  // 和訳 → 次の英語（英の時間待つ）
+  if(state.idx >= state.shuffled.length - 1){
+    state.idx = 0;
+  }else{
+    state.idx++;
+  }
+  state.phase = 0;
+  render();
+  speakCurrent();
+  scheduleAuto(state.autoEnMs);
+}
+
+/* =========================
+   ✅ Auto時間UI処理
+========================= */
+function sanitizeMs(v, min, max, fallback){
+  const n = Number(v);
+  if(!Number.isFinite(n)) return fallback;
+  return clamp(Math.round(n), min, max);
+}
+
+autoEnMsInput.addEventListener("change", () => {
+  stopAuto();
+  state.autoEnMs = sanitizeMs(autoEnMsInput.value, 200, 10000, 1000);
+  autoEnMsInput.value = String(state.autoEnMs);
+  saveState();
+});
+
+autoJaMsInput.addEventListener("change", () => {
+  stopAuto();
+  state.autoJaMs = sanitizeMs(autoJaMsInput.value, 200, 20000, 1500);
+  autoJaMsInput.value = String(state.autoJaMs);
+  saveState();
+});
+
+autoTimeResetBtn.addEventListener("click", () => {
+  stopAuto();
+  state.autoEnMs = 1000;
+  state.autoJaMs = 1500;
+  autoEnMsInput.value = String(state.autoEnMs);
+  autoJaMsInput.value = String(state.autoJaMs);
+  saveState();
+});
 
 /* =========================
    Wheel（検索）
@@ -1292,7 +1674,6 @@ let wheelFiltered = [];
 let wheelShown = 0;
 let wheelActiveIndex = 0;
 const WHEEL_BATCH = 9999;
-/* ✅ 追加 */
 let wheelSnapTimer = 0;
 
 function wheelMatch(q, item){
@@ -1313,35 +1694,10 @@ function updateWheelHint(){
   wheelHint.textContent = (total === 0) ? "該当なし" : `${total}件 / 表示 ${wheelShown}件`;
   wheelMoreBtn.style.display = (wheelShown >= wheelFiltered.length) ? "none" : "";
 }
-// function renderWheelItems(){
-//   wheelList.innerHTML = "";
-//   const slice = wheelFiltered.slice(0, wheelShown);
-//   slice.forEach((v, idx) => {
-//     const li = document.createElement("li");
-//     li.className = "wheelItem" + (idx === wheelActiveIndex ? " isActive" : "");
-//     li.innerHTML = `
-//       <div class="wheelItemInner">
-//         <div class="num">${v.i + 1}</div>
-//         <div>
-//           <div class="main">${escapeHtml(v.en)}</div>
-//           <span class="ja">${escapeHtml(v.ja)}</span>
-//         </div>
-//       </div>
-//     `;
-//     li.addEventListener("click", () => {
-//       wheelActiveIndex = idx;
-//       [...wheelList.querySelectorAll(".wheelItem")].forEach(x => x.classList.remove("isActive"));
-//       li.classList.add("isActive");
-//     });
-//     wheelList.appendChild(li);
-//   });
-// }
-
 function wheelUpdateActiveClass(){
   const items = wheelList.querySelectorAll(".wheelItem");
   items.forEach((li, idx) => li.classList.toggle("isActive", idx === wheelActiveIndex));
 }
-
 function wheelScrollToIndex(i, smooth){
   const items = wheelList.querySelectorAll(".wheelItem");
   if(!items.length) return;
@@ -1355,7 +1711,6 @@ function wheelScrollToIndex(i, smooth){
   wheelActiveIndex = idx;
   wheelUpdateActiveClass();
 }
-
 function wheelPickNearest(){
   const items = wheelList.querySelectorAll(".wheelItem");
   if(!items.length) return 0;
@@ -1374,12 +1729,10 @@ function wheelPickNearest(){
   });
   return best;
 }
-
 function wheelSnap(){
   const i = wheelPickNearest();
   wheelScrollToIndex(i, true);
 }
-
 function renderWheelItems(){
   wheelList.innerHTML = "";
   const slice = wheelFiltered.slice(0, wheelShown);
@@ -1400,26 +1753,24 @@ function renderWheelItems(){
     wheelList.appendChild(li);
   });
 
-  // ✅ 描画後に active 表示を反映
   wheelActiveIndex = clamp(wheelActiveIndex, 0, Math.max(0, slice.length - 1));
   wheelUpdateActiveClass();
 }
-
 function rebuildWheelList(){
   const q = (wheelSearchInput.value || "").trim();
   wheelFiltered = VOCAB.map((v, i) => ({...v, i})).filter(v => wheelMatch(q, v));
-  wheelShown = wheelFiltered.length;   // ←全件表示
+  wheelShown = wheelFiltered.length;
   wheelActiveIndex = 0;
   renderWheelItems();
   updateWheelHint();
   wheelViewport.scrollTop = 0;
-  // ✅ 一旦先頭に寄せた後、中央選択を確定
   requestAnimationFrame(() => {
     wheelActiveIndex = 0;
     wheelScrollToIndex(0, false);
   });
 }
 function openWheel(){
+  stopAuto();
   wheelOverlay.classList.add("show");
   wheelOverlay.setAttribute("aria-hidden", "false");
   wheelSearchInput.value = "";
@@ -1438,6 +1789,8 @@ function wheelMore(){
   updateWheelHint();
 }
 function wheelJumpToSelected(){
+  stopAuto();
+
   if(wheelFiltered.length === 0) return;
   const picked = wheelFiltered[wheelActiveIndex];
   if(!picked) return;
@@ -1453,7 +1806,6 @@ function wheelJumpToSelected(){
     state.idx = Math.max(0, pos2);
   }
 
-  // ✅ 探した単語へ移動したら「出題状態」に戻す
   state.started = true;
   state.phase = 0;
   render();
@@ -1468,7 +1820,13 @@ nextBtn.addEventListener("click", startOrAdvance);
 resetBtn.addEventListener("click", hardReset);
 clearWrongBtn.addEventListener("click", clearWrong);
 
+autoBtn.addEventListener("click", () => {
+  if(state.autoOn) stopAuto();
+  else startAuto();
+});
+
 wrongOnlyToggle.addEventListener("change", () => {
+  stopAuto();
   state.wrongOnly = wrongOnlyToggle.checked;
   buildOrder();
   state.idx = 0;
@@ -1484,13 +1842,12 @@ missToggle.addEventListener("change", () => {
   if(missToggle.checked) state.wrongSet[real] = true;
   else delete state.wrongSet[real];
 
-  updateTopUI();  // ← これで( )の数や表示だけ更新
-  saveState();    // ← 状態保存
-
-  // ※ render() は呼ばない（→ 発音しない）
+  updateTopUI();
+  saveState();
 });
 
 audioToggle.addEventListener("click", () => {
+  stopAuto();
   state.audioOn = !state.audioOn;
   if(!state.audioOn){
     try{ window.speechSynthesis.cancel(); }catch(e){}
@@ -1499,12 +1856,14 @@ audioToggle.addEventListener("click", () => {
 });
 
 themeToggle.addEventListener("click", () => {
+  stopAuto();
   state.dark = !state.dark;
   document.body.classList.toggle("dark", state.dark);
   render();
 });
 
 orderToggle.addEventListener("click", () => {
+  stopAuto();
   state.orderRandom = !state.orderRandom;
   buildOrder();
   state.idx = 0;
@@ -1513,8 +1872,9 @@ orderToggle.addEventListener("click", () => {
   render();
 });
 
-rangeFrom.addEventListener("change", applyRangeFromInputs);
-rangeTo.addEventListener("change", applyRangeFromInputs);
+// ======== イベント ========
+rangeFrom.addEventListener("change", applyFromInput);
+rangeTo.addEventListener("change", applyToInput);
 
 rateRange.addEventListener("input", () => {
   state.rate = Number(rateRange.value);
@@ -1524,6 +1884,7 @@ rateRange.addEventListener("input", () => {
 
 // 発音ボタン（いつでもOK）
 speakBtn.addEventListener("click", () => {
+  stopAuto();
   const real = currentRealIndex();
   if(real === null) return;
   speak(VOCAB[real].en);
@@ -1536,12 +1897,12 @@ wheelClearSearchBtn.addEventListener("click", () => { wheelSearchInput.value = "
 wheelSearchInput.addEventListener("input", rebuildWheelList);
 wheelMoreBtn.addEventListener("click", wheelMore);
 wheelJumpBtn.addEventListener("click", wheelJumpToSelected);
+
 wheelList.addEventListener("click", (e) => {
   const li = e.target.closest(".wheelItem");
   if(!li) return;
   const idx = parseInt(li.dataset.index || "0", 10);
   if(!Number.isFinite(idx)) return;
-
   wheelScrollToIndex(idx, true);
 });
 wheelViewport.addEventListener("scroll", () => {
@@ -1572,7 +1933,10 @@ document.addEventListener("keydown", (e) => { if(e.key === "Escape" && wheelOver
   rateRange.value = String(state.rate);
   rateLabel.textContent = `${state.rate.toFixed(1)}x`;
 
-  // 並びの整合性チェック
+  // ✅ Auto時間の補正
+  state.autoEnMs = clamp(Number(state.autoEnMs) || 1000, 200, 10000);
+  state.autoJaMs = clamp(Number(state.autoJaMs) || 1500, 200, 20000);
+
   if(!Array.isArray(state.shuffled) || state.shuffled.length === 0){
     buildOrder();
   }else{
@@ -1582,9 +1946,15 @@ document.addEventListener("keydown", (e) => { if(e.key === "Escape" && wheelOver
     state.idx = clamp(state.idx, 0, state.shuffled.length - 1);
   }
 
-  // ✅ 初期は「はじめる」待ちにする（保存があってもここで統一したいなら true/false変えられます）
-  // state.started = false;
-  // state.phase = 0;
+  // ✅ 再読み込みで勝手にAuto開始しない（安全）
+  state.autoOn = false;
+  if(autoTimer) clearTimeout(autoTimer);
+  autoTimer = 0;
+  updateAutoBtn();
+  setWakeUI(false, "WakeLock: OFF");
+
+  rangeFrom.max = String(state.rangeTo);
+  rangeTo.min   = String(state.rangeFrom);
 
   render();
 })();
