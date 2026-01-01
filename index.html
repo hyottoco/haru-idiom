@@ -3,80 +3,171 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>ハル熟 400</title>
+  <title>ハル熟 400 try</title>
 
   <style>
     :root{
-      --bd: #ddd;
-      --bd-dark: #2a2f3a;
-      --bg: #fff;
-      --fg: #111;
-      --muted: #666;
-      --card: #fff;
-      --card-dark: #171a21;
+      --bd:#ddd; --bd-dark:#2a2f3a;
+      --bg:#fff; --fg:#111;
+      --muted:#666;
+      --card:#fff; --card-dark:#171a21;
 
-      --pill-pad-y: 10px;
-      --pill-pad-x: 12px;
-      --pill-radius: 999px;
+      --pill-pad-y:6px; --pill-pad-x:8px; --pill-radius:999px;
+      --btn-radius:12px;
 
-      --btn-radius: 12px;
-
-      /* 復習系の淡い色（統一） */
-      --review-bg: #f3f6fb;
-      --review-bd: #cfd8e3;
-      --review-fg: #334155;
-
-      --review-bg-hover: #e9eef7;
-      --review-accent: #64748b;
+      /* 復習系 */
+      --review-bg:#f3f6fb; --review-bd:#cfd8e3; --review-fg:#334155;
+      --review-bg-hover:#e9eef7; --review-accent:#64748b;
 
       /* wheel */
-      --wheel-item-h: 44px;
-      --wheel-fade: rgba(255,255,255,0.9);
-      --wheel-fade-dark: rgba(15,17,21,0.85);
+      --wheel-item-h:44px;
+      --wheel-fade:rgba(255,255,255,0.9);
+      --wheel-fade-dark:rgba(15,17,21,0.85);
     }
 
     body{
-      font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-      margin: 0;
-      padding: 5px;
-      background: var(--bg);
-      color: var(--fg);
-      transition: background .2s ease, color .2s ease;
+      font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+      margin:0; padding:5px;
+      background:var(--bg); color:var(--fg);
+      transition:background .2s ease,color .2s ease;
     }
 
     .card{
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 18px;
-      border: 1px solid var(--bd);
-      border-radius: 14px;
-      background: var(--card);
-      transition: background .2s ease, border-color .2s ease;
-      position: relative;
+      max-width:820px;
+      margin:0 auto;
+      padding:18px;
+      border:1px solid var(--bd);
+      border-radius:14px;
+      background:var(--card);
+      position:relative;
+      transition:background .2s ease,border-color .2s ease;
     }
 
+    /* PC/iPad：縦長見え */
+    @media (min-width:768px){
+      .card{ max-width:300px; }
+    }
+
+    .page-title{
+      font-size:16px;
+      font-weight:700;
+      margin:0 0 12px;
+      text-align:center;
+      letter-spacing:.03em;
+      user-select:none;
+    }
+
+    /* 行レイアウト */
     .row{
       display:flex;
+      align-items:center;
       gap:10px;
       flex-wrap:wrap;
-      align-items:center;
-      margin-top: 10px;
+      margin-top:10px;
     }
-
-    /* ✅ 復習行：左(復習) / 右(ボタン群) */
-    .reviewRow{
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .topbar-right{
       display:flex;
       align-items:center;
       gap:10px;
+      flex-wrap:wrap;
+    }
+
+    /* 共通UI（badge/pill/small） */
+    .badge,.pill,button.small{
+      font-size:16px;
+      line-height:1;
+      padding:var(--pill-pad-y) var(--pill-pad-x);
+      border-radius:var(--pill-radius);
+      border:1px solid var(--bd);
+      background:transparent;
+      color:inherit;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      white-space:nowrap;
+      transition:background .2s ease,border-color .2s ease,color .2s ease;
+    }
+    .pill{ cursor:pointer; }
+    button.small{ cursor:pointer; }
+    button.small:active{ transform:translateY(1px); }
+
+    button{
+      font-size:16px;
+      padding:10px 14px;
+      border-radius:var(--btn-radius);
+      border:1px solid var(--bd);
+      background:#fff;
+      color:#111;
+      cursor:pointer;
+      transition:background .2s ease,border-color .2s ease,color .2s ease;
+    }
+    button:active{ transform:translateY(1px); }
+
+    .primary{ font-weight:500; }
+    .danger{ border-color:#f2c; }
+    .toggle{ border-color:#88c; }
+    .pill.togglePill{ border-color:#88c; }
+
+    /* iPhoneダブルタップ拡大など抑制 */
+    button, label, .pill{
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+
+    /* 復習UI */
+    .reviewUI{
+      background:var(--review-bg);
+      border-color:var(--review-bd);
+      color:var(--review-fg);
+      border-radius:14px;
+    }
+    @media (hover:hover) and (pointer:fine){
+      .reviewUI:hover{ background:var(--review-bg-hover); }
+    }
+    @media (hover:none){
+      .reviewUI:hover{ background:var(--review-bg); }
+    }
+    .pressWhite:active{
+      background:#fff;
+      border-color:var(--review-bd);
+      color:var(--review-fg);
+    }
+
+    .pill input[type="checkbox"]{
+      width:18px; height:18px; margin:0;
+      accent-color:#88c;
+      transform:translateY(.5px);
+    }
+    .reviewUI input[type="checkbox"]{ accent-color:var(--review-accent); }
+    .pill .count{ opacity:.85; font-variant-numeric:tabular-nums; }
+
+    /* 1行目/2行目高さ調整 */
+    .topbar .badge,
+    .topbar-right button.small{
+      padding-top:12px; padding-bottom:12px;
+    }
+
+    /* 復習行 */
+    .reviewRow{
+      display:flex; align-items:center; gap:10px;
       flex-wrap:nowrap;
     }
     .reviewRow-right{
       margin-left:auto;
-      display:flex;
-      align-items:center;
-      gap:10px;
+      display:flex; align-items:center; gap:10px;
     }
-    @media (max-width: 360px){
+    .reviewRow .pill,
+    .reviewRow button.small{
+      padding-top:12px; padding-bottom:12px;
+    }
+    @media (max-width:360px){
       .reviewRow{ flex-wrap:wrap; }
       .reviewRow-right{
         width:100%;
@@ -85,501 +176,407 @@
       }
     }
 
-    .badge,
-    button.small,
-    .pill{
-      font-size: 16px;
-      line-height: 1;
-      padding: var(--pill-pad-y) var(--pill-pad-x);
-      border-radius: var(--pill-radius);
-      border: 1px solid var(--bd);
-      background: transparent;
-      color: inherit;
-      transition: background .2s ease, border-color .2s ease, color .2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      user-select: none;
-      white-space: nowrap;
-
-      /* ✅ 縦の隙間を詰める */
-      padding-top: 6px;
-      padding-bottom: 6px;
-      padding-left: 8px;
-      padding-right: 8px;   /* ← ここを小さく */
+    /* 範囲 + Auto + 現在No */
+    .rangeWrap{
+      width:100%;
+      display:grid;
+      grid-template-columns:1fr auto;
+      row-gap:6px;
+      column-gap:10px;
+    }
+    .rangeTop{ grid-column:1 / 3; display:contents; }
+    .rangeBadge{
+      grid-column:1;
+      width:fit-content;
+      justify-self:start;
+    }
+    #autoBtn{ grid-column:2; white-space:nowrap; }
+    .rangeNow{
+      grid-column:2;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding-left:2px;
+    }
+    @media (max-width:360px){
+      .rangeWrap{ grid-template-columns:1fr; }
+      #autoBtn, .rangeNow{ grid-column:1; }
     }
 
-    .pill{ cursor: pointer; }
-    button.small{ cursor: pointer; }
-    button.small:active{ transform: translateY(1px); }
+    .rangeInput{
+      width:3.5em;
+      padding:6px;
+      border:1px solid var(--bd);
+      border-radius:10px;
+      font-size:14px;
+      background:transparent;
+      color:inherit;
+      text-align:left;
+    }
+    .rangeInput::-webkit-outer-spin-button,
+    .rangeInput::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+    .rangeInput[type="number"]{ appearance:textfield; }
+
+    .word-no,.word-num-header{
+      font-size:14px;
+      font-weight:600;
+      color:var(--muted);
+      line-height:1;
+      user-select:none;
+    }
+
+    .displayArea{ min-height:155px; }
+    .word{ margin:18px 0 10px; line-height:1.1; word-break:break-word; }
+    .word-text{ font-size:30px; font-weight:400; }
+    .meaning{
+      font-size:20px;
+      margin:10px 0 0;
+      min-height:40px;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+    }
 
     .btns{
       display:flex;
       gap:10px;
-      margin-top: 16px;
+      margin-top:16px;
       flex-wrap:wrap;
       align-items:center;
     }
+    #nextBtn{ width:100%; }
 
-    button{
-      font-size: 16px;
-      padding: 10px 14px;
-      border-radius: var(--btn-radius);
-      border: 1px solid var(--bd);
-      background: #fff;
-      color: #111;
-      cursor: pointer;
-      transition: background .2s ease, border-color .2s ease, color .2s ease;
-    }
-    button:active{ transform: translateY(1px); }
-
-    button.small.toggle{ font-size: 18px; }
-
-    #speakBtn{
-      margin-left: auto;
-      margin-right: 4px;
-    }
-
-    .primary{ font-weight: 500; }
-    .danger{ border-color:#f2c; }
-    .toggle{ border-color:#88c; }
-    .pill.togglePill{ border-color:#88c; }
-
-    .pill input[type="checkbox"]{
-      width:18px;
-      height:18px;
-      margin:0;
-      accent-color: #88c;
-      transform: translateY(0.5px);
-    }
-    .pill .count{
-      opacity: .85;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .reviewUI{
-      background: var(--review-bg);
-      border-color: var(--review-bd);
-      color: var(--review-fg);
-      border-radius: 14px;
-    }
-    @media (hover: hover) and (pointer: fine){
-      .reviewUI:hover{ background: var(--review-bg-hover); }
-    }
-    @media (hover: none){
-      .reviewUI:hover{ background: var(--review-bg); }
-    }
-
-    .pressWhite:active{
-      background: #fff;
-      border-color: var(--review-bd);
-      color: var(--review-fg);
-    }
-    @media (hover: none){
-      .pressWhite:hover{ background: var(--review-bg); }
-    }
-
-    button, label, .pill{
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-
-    .reviewUI input[type="checkbox"]{ accent-color: var(--review-accent); }
-
-    .topbar{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .topbar-right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .rangeInput{
-      width: 3.5em;
-      padding: 6px 6px;
-      border: 1px solid var(--bd);
-      border-radius: 10px;
-      font-size: 14px;
-      background: transparent;
-      color: inherit;
-      text-align: left;
-    }
-
-    /* ✅ 範囲入力（No 〜）の上下ステップ（スピナー）を消す */
-    .rangeInput::-webkit-outer-spin-button,
-    .rangeInput::-webkit-inner-spin-button{
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    .rangeInput[type="number"]{
-      appearance: textfield;
-    }
-
-
-    .word-no{
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--muted);
-      line-height: 1;
-      user-select: none;
-    }
-
-    .word-num-header{
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-left: 1px;
-      line-height: 1;
-      user-select: none;
-    }
-
-    .displayArea{ min-height: 155px; }
-
-    .word{
-      margin: 18px 0 10px;
-      line-height: 1.1;
-      word-break: break-word;
-    }
-    .word-text{
-      font-size: 30px;
-      font-weight: 400;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    .meaning{
-      font-size: 20px;
-      margin: 10px 0 0;
-      min-height: 40px;
-      word-break: break-word;
-      overflow-wrap: anywhere;
-    }
-
+    /* 復習リストに追加 */
     .missBox{
       display:none;
-      margin-top: 12px;
-      padding: 6px;
-      border: 1px solid var(--bd);
-      border-radius: 12px;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: nowrap;
-      width: fit-content;
-      max-width: 100%;
-      flex: 0 0 auto;
-      align-self: flex-start;
-      background: rgba(0,0,0,0.02);
-    }
-    .missBox.show{ display:inline-flex; }
-    .missBox input{ width: 22px; height: 22px; margin:0; }
-    .missBox .label{ font-size: 14px; user-select: none; white-space: nowrap; display: inline-block;}
-
-    /* ダークモード */
-    body.dark{
-      background: #0f1115;
-      color: #e9e9ea;
-    }
-    body.dark .card{
-      background: var(--card-dark);
-      border-color: var(--bd-dark);
-    }
-    body.dark .badge,
-    body.dark button.small,
-    body.dark .pill{
-      border-color: var(--bd-dark);
-      background: rgba(255,255,255,0.03);
-      color: #d6d6d8;
-    }
-    body.dark button{
-      background: #1f2430;
-      border-color: var(--bd-dark);
-      color: #e9e9ea;
-    }
-    body.dark .missBox{
-      border-color: var(--bd-dark);
-      background: rgba(255,255,255,0.03);
-    }
-    body.dark .rangeInput{ border-color: var(--bd-dark); }
-    body.dark .word-num-header{ color:#aaa; }
-
-    body.dark .reviewUI{
-      background: rgba(255,255,255,0.06);
-      border-color: var(--bd-dark);
-      color: #e5e7eb;
-    }
-
-    body.dark .pressWhite:active{
-      background: rgba(255,255,255,0.16);
-      border-color: var(--bd-dark);
-      color: #e5e7eb;
-    }
-
-    .page-title{
-      font-size: 16px;
-      font-weight: 700;
-      margin: 0 0 12px;
-      text-align: center;
-      letter-spacing: 0.03em;
-    }
-    body.dark .page-title{ color: #e9e9ea; }
-
-    /* =========================
-       ✅ 発音速度UI
-    ========================= */
-    .speedBox{
-      flex: 0 0 auto;
-      display:flex;
+      margin-top:12px;
+      padding:6px;
+      border:1px solid var(--bd);
+      border-radius:12px;
       align-items:center;
-      gap:4px;
-      padding: 8px 8px;
-      border: 1px solid var(--bd);
-      border-radius: 999px;
-      background: transparent;
-      user-select:none;
-      min-width: 20px;
-      width: fit-content;
-      flex: 0 0 auto;   /* 念のため（伸び抑制） */
-    }
-    body.dark .speedBox{
-      border-color: var(--bd-dark);
-      background: rgba(255,255,255,0.03);
-      color: #d6d6d8;
-    }
-    .speedBox input[type="range"]{
-      width: 48px;
-      display: block;
-      margin: 0;
-    }
-    .speedBox .val{
-      font-size: 13px;
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-      opacity: .9;
-      min-width: 2.0em;
-      text-align: right;
-    }
+      gap:10px;
+      background:rgba(0,0,0,0.02);
 
-    /* ✅ 探す行：1行固定 */
+      width:100%;
+      box-sizing:border-box;
+      justify-content:center;
+      cursor:pointer;
+    }
+    .missBox.show{ display:flex; }
+    .missBox input{ width:22px; height:22px; margin:0; cursor:pointer; }
+    .missBox .label{ font-size:14px; user-select:none; white-space:nowrap; }
+
+    /* 探す行 */
     .searchRow{
       display:flex;
       align-items:center;
       gap:10px;
-      flex-wrap: nowrap;
+      flex-wrap:nowrap;
     }
     .searchRow-right{
       margin-left:auto;
       display:flex;
       align-items:center;
       gap:10px;
-      flex-wrap: nowrap;
-      min-width: 0;
+      flex-wrap:nowrap;
+      min-width:0;
+    }
+    .searchRow > button,
+    .searchRow-right > button{ font-size:14px; }
+
+    /* 発音速度 */
+    .speedBox{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      padding:8px;
+      border:1px solid var(--bd);
+      border-radius:999px;
+      background:transparent;
+      user-select:none;
+      width:fit-content;
+    }
+    .speedBox input[type="range"]{ width:48px; margin:0; }
+    .speedBox .val{
+      font-size:13px;
+      font-variant-numeric:tabular-nums;
+      white-space:nowrap;
+      opacity:.9;
+      min-width:2.0em;
+      text-align:right;
     }
 
-    .searchRow #speakBtn{
-      margin-left: 0; /* この行だけ */
-    }
-
-
-
-    /* ✅ Auto表示時間（探すの下段） */
+    /* Auto時間 */
     .autoTimeRow{
-      margin-top: 8px;
+      margin-top:8px;
       display:flex;
       align-items:center;
       gap:8px;
-      flex-wrap: nowrap;          /* ← 1行固定 */
+      flex-wrap:nowrap;
     }
-
     .autoTimeBadge{
-      flex: 0 0 auto;      /* 伸びない */
-      width: fit-content;  /* 中身ぴったり */
+      flex:0 0 auto;
+      width:fit-content;
       display:flex;
       align-items:center;
       gap:6px;
-      flex-wrap: nowrap;          /* ← 中も1行固定 */
-      overflow: hidden;           /* ← はみ出し防止 */
+      flex-wrap:nowrap;
+      overflow:hidden;
     }
-
     .msInput{
-      width: 2.5em;               /* ← 4桁分 */
-      padding: 4px 8px;
-      border: 1px solid var(--bd);
-      border-radius: 10px;
-      font-size: 14px;            /* ← 14px */
-      background: transparent;
-      color: inherit;
+      width:2.5em;
+      padding:4px 8px;
+      border:1px solid var(--bd);
+      border-radius:10px;
+      font-size:14px;
+      background:transparent;
+      color:inherit;
     }
-
-    /* ✅ number入力の上下ステップ（スピナー）を消す */
     .msInput::-webkit-outer-spin-button,
-    .msInput::-webkit-inner-spin-button{
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    .msInput[type="number"]{
-      appearance: textfield;
-    }
-
-
-    body.dark .msInput{ border-color: var(--bd-dark); }
-
-    .miniLbl{ font-size: 13px; opacity: .85; }
-    .unit{ font-size: 12px; opacity: .75; }
-
-    /* ✅ 初期値ボタンを小さく（button.small より強く） */
+    .msInput::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+    .msInput[type="number"]{ appearance:textfield; }
+    .miniLbl{ font-size:13px; opacity:.85; }
+    .unit{ font-size:12px; opacity:.75; }
     button.small.miniBtn{
-      font-size: 14px;   /* 好みで 10〜13px */
-      padding: 6px 8px;  /* 好みで調整 */
-      border-radius: 999px;
-      line-height: 1;
-      white-space: nowrap;
+      font-size:14px;
+      padding:6px 8px;
+      border-radius:999px;
+      line-height:1;
+      white-space:nowrap;
     }
 
-
-
-    /* PC/iPadではカードを細くして縦長に見せる */
-    @media (min-width: 768px){
-      .card{ max-width: 300px; }
-    }
-
-    #nextBtn{ width: 100%; }
-
-    /* 復習リストに追加（枠）のサイズ調整 */
-    #missBox{
-      width: 100%;
-      box-sizing: border-box;
-      justify-content: center;
-      align-self: stretch;
-      flex: 1 1 auto;
-      display: flex;
-      cursor: pointer;
-    }
-    #missBox input{ cursor: pointer; }
-
-    /* wheel（見た目はそのまま・省略せず残す） */
-    .modalOverlay{ position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: none; align-items: flex-end; justify-content: center; padding-left: 14px; padding-right: 14px; padding-top: calc(env(safe-area-inset-top) + 10px); padding-bottom: calc(env(safe-area-inset-bottom) + 14px); z-index: 9999; }
-    .modalOverlay.show{ display:flex; }
-    .modalSheet{ width: min(500px, 100%); border-radius: 18px; border: 1px solid var(--bd); background: #fff; color: #111; box-shadow: 0 12px 40px rgba(0,0,0,.18); overflow: hidden; transform: translateY(8px); animation: sheetIn .16s ease-out forwards; max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px); overflow: auto; -webkit-overflow-scrolling: touch; }
-    @keyframes sheetIn{ to{ transform: translateY(0); } }
-    body.dark .modalSheet{ background: #171a21; color: #e9e9ea; border-color: var(--bd-dark); box-shadow: 0 12px 40px rgba(0,0,0,.35); }
-    .modalHeader{ display:flex; align-items:center; justify-content: space-between; padding: 6px 12px; border-bottom: 1px solid var(--bd); gap: 10px; }
-    body.dark .modalHeader{ border-bottom-color: var(--bd-dark); }
-    .modalTitle{ font-size: 14px; font-weight: 700; letter-spacing: .02em; opacity: .95; user-select: none; }
-    .modalHeader .mini{ font-size: 14px; padding: 10px 12px; border-radius: 999px; border: 1px solid var(--bd); background: transparent; color: inherit; }
-    body.dark .modalHeader .mini{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
-    .wheelSearchRow{ display:flex; gap:8px; padding: 6px; border-bottom: 1px solid var(--bd); }
-    body.dark .wheelSearchRow{ border-bottom-color: var(--bd-dark); }
-    .wheelSearch{ flex: 1; border: 1px solid var(--bd); border-radius: 12px; padding: 10px 12px; font-size: 14px; background: transparent; color: inherit; outline: none; }
-    body.dark .wheelSearch{ border-color: var(--bd-dark); }
-    .wheelArea{ position: relative; padding: 12px 12px 2px; }
-    .wheelViewport{ position: relative; height: calc(var(--wheel-item-h) * 7); overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: y mandatory; overscroll-behavior: contain; border-radius: 16px; border: 1px solid var(--bd); background: rgba(0,0,0,0.02); touch-action: pan-y; }
-    body.dark .wheelViewport{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
-    .wheelFadeTop, .wheelFadeBottom{ pointer-events: none; position: absolute; left: 12px; right: 12px; height: 44px; z-index: 2; }
-    .wheelFadeTop{ top: 12px; background: linear-gradient(to bottom, var(--wheel-fade), rgba(255,255,255,0)); }
-    .wheelFadeBottom{ bottom: 2px; background: linear-gradient(to top, var(--wheel-fade), rgba(255,255,255,0)); }
-    body.dark .wheelFadeTop{ background: linear-gradient(to bottom, var(--wheel-fade-dark), rgba(15,17,21,0)); }
-    body.dark .wheelFadeBottom{ background: linear-gradient(to top, var(--wheel-fade-dark), rgba(15,17,21,0)); }
-    .wheelCenterLine{ pointer-events: none; position: absolute; left: 12px; right: 12px; top: calc(12px + (var(--wheel-item-h) * 3)); height: var(--wheel-item-h); border-top: 1px solid rgba(100,116,139,0.35); border-bottom: 1px solid rgba(100,116,139,0.35); border-radius: 14px; z-index: 3; display: none;}
-    .wheelList{ position: relative; padding: calc(var(--wheel-item-h) * 3) 0; margin: 0; list-style: none; }
-    .wheelItem{ height: var(--wheel-item-h); display:flex; align-items:center; justify-content: center; scroll-snap-align: center; user-select: none; padding: 0 14px; }
-    .wheelItemInner{ width: 100%; max-width: 92%; text-align: left; padding: 8px 10px; border-radius: 14px; border: 1px solid transparent; line-height: 1.15; word-break: break-word; overflow-wrap: anywhere; display: grid; grid-template-columns: 3.2em 1fr; column-gap: 10px; align-items: center; }
-    .wheelItemInner .num{ font-size: 12px; opacity: .70; font-variant-numeric: tabular-nums; justify-self: start; user-select: none; }
-    .wheelItemInner .main{ font-size: 18px; font-weight: 500; }
-    .wheelItemInner .ja{ display: block; font-size: 12px; opacity: .70; margin-top: 2px; line-height: 1.2; word-break: break-word; overflow-wrap: anywhere; }
-    .wheelItem.isActive .wheelItemInner{ border-color: rgba(100,116,139,0.25); background: rgba(100,116,139,0.06); }
-    .wheelFooter{ display:flex; gap:10px; padding: 8px; border-top: 1px solid var(--bd); justify-content: space-between; flex-wrap: wrap; align-items:center; }
-    body.dark .wheelFooter{ border-top-color: var(--bd-dark); }
-    .wheelHint{ font-size: 12px; opacity: .75; padding: 0 12px 10px; user-select: none; min-height: 1.2em; }
-    .mini{ font-size: 14px; padding: 10px 30px; border-radius: 999px; border: 1px solid var(--bd); background: transparent; color: inherit; }
-    body.dark .mini{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
-
-    /* ✅ 1行目（0/0 も含めて）高さを揃える */
-    .topbar .badge,
-    .topbar-right button.small{
-      padding-top: 12px;
-      padding-bottom: 12px;
-    }
-
-    /* ✅ 2行目（復習・右ボタン群）を同じ高さで少し大きく */
-    .reviewRow .pill,
-    .reviewRow button.small{
-      padding-top: 12px;
-      padding-bottom: 12px;
-    }
-
-    #resetBtn, #clearWrongBtn { font-size: 16px; }
-
-    /* ✅ 最下行（探す・発音）だけ文字を少し小さく */
-    .searchRow > button,
-    .searchRow-right > button{
-      font-size: 14px;
-    }
-
-    /* ✅ WakeLock状態表示（小さく） */
+    /* WakeLock badge */
     .wakeBadge{
-      position: fixed;                 /* ← 画面に固定 */
-      top: calc(env(safe-area-inset-top) + 8px); /* ← iPhoneノッチ対策 */
-      right: 8px;                      /* ← 右端 */
-      bottom: auto;                    /* ← 下固定を解除 */
-      font-size: 11px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--bd);
-      background: rgba(255,255,255,0.75);
-      color: inherit;
+      position:fixed;
+      top:calc(env(safe-area-inset-top) + 8px);
+      right:8px;
+      font-size:11px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--bd);
+      background:rgba(255,255,255,0.75);
       user-select:none;
       display:none;
-      z-index: 99999;                  /* ← 最前面に */
-    }
-
-    body.dark .wakeBadge{
-      border-color: var(--bd-dark);
-      background: rgba(0,0,0,0.25);
-    }
-    .wakeBadge.show{ display:inline-flex; gap:8px; align-items:center; }
-    .wakeDot{
-      width: 7px; height: 7px; border-radius: 999px;
-      background: #999;
-      display:inline-block;
-    }
-    .wakeDot.on{ background: #22c55e; }
-    .wakeDot.off{ background: #ef4444; }
-
-    /* ✅ 範囲 + Auto を横並び、現在Noを下へ（grid版） */
-    .rangeWrap{
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      row-gap: 6px;
-      column-gap: 10px;
-    }
-
-    /* ✅ rangeBadge を grid の伸び（stretch）から外して、中身の幅に合わせる */
-    .rangeBadge{
-      justify-self: start;     /* ← これが本命 */
-      width: fit-content;      /* ← 念のため（iOSでも効きやすい） */
-    }
-
-
-    .rangeTop{ grid-column: 1 / 3; display: contents; }
-    .rangeBadge{ grid-column: 1; }
-    #autoBtn{ grid-column: 2; white-space: nowrap; }
-    .rangeNow{
-      grid-column: 2;
-      display:flex;
+      z-index:99999;
       align-items:center;
       gap:8px;
-      padding-left: 2px;
     }
-    @media (max-width: 360px){
-      .rangeWrap{ grid-template-columns: 1fr; }
-      #autoBtn, .rangeNow{ grid-column: 1; }
+    .wakeBadge.show{ display:inline-flex; }
+    .wakeDot{ width:7px; height:7px; border-radius:999px; background:#999; }
+    .wakeDot.on{ background:#22c55e; }
+    .wakeDot.off{ background:#ef4444; }
+
+    /* ダーク */
+    body.dark{ background:#0f1115; color:#e9e9ea; }
+    body.dark .card{ background:var(--card-dark); border-color:var(--bd-dark); }
+    body.dark .badge,
+    body.dark button.small,
+    body.dark .pill{
+      border-color:var(--bd-dark);
+      background:rgba(255,255,255,0.03);
+      color:#d6d6d8;
     }
+    body.dark button{
+      background:#1f2430;
+      border-color:var(--bd-dark);
+      color:#e9e9ea;
+    }
+    body.dark .rangeInput,
+    body.dark .msInput,
+    body.dark .speedBox{ border-color:var(--bd-dark); }
+    body.dark .word-num-header{ color:#aaa; }
+    body.dark .reviewUI{
+      background:rgba(255,255,255,0.06);
+      border-color:var(--bd-dark);
+      color:#e5e7eb;
+    }
+    body.dark .pressWhite:active{
+      background:rgba(255,255,255,0.16);
+      border-color:var(--bd-dark);
+      color:#e5e7eb;
+    }
+    body.dark .missBox{
+      border-color:var(--bd-dark);
+      background:rgba(255,255,255,0.03);
+    }
+    body.dark .wakeBadge{
+      border-color:var(--bd-dark);
+      background:rgba(0,0,0,0.25);
+    }
+
+    /* ===== wheel modal ===== */
+    .modalOverlay{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:calc(env(safe-area-inset-top) + 10px) 14px calc(env(safe-area-inset-bottom) + 14px);
+      z-index:9999;
+    }
+    .modalOverlay.show{ display:flex; }
+
+    .modalSheet{
+      width:min(500px,100%);
+      border-radius:18px;
+      border:1px solid var(--bd);
+      background:#fff;
+      color:#111;
+      box-shadow:0 12px 40px rgba(0,0,0,.18);
+      overflow:hidden;
+      transform:translateY(8px);
+      animation:sheetIn .16s ease-out forwards;
+      max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px);
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    @keyframes sheetIn{ to{ transform:translateY(0); } }
+    body.dark .modalSheet{
+      background:#171a21;
+      color:#e9e9ea;
+      border-color:var(--bd-dark);
+      box-shadow:0 12px 40px rgba(0,0,0,.35);
+    }
+
+    .modalHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:6px 12px;
+      border-bottom:1px solid var(--bd);
+      gap:10px;
+    }
+    body.dark .modalHeader{ border-bottom-color:var(--bd-dark); }
+    .modalTitle{
+      font-size:14px;
+      font-weight:700;
+      letter-spacing:.02em;
+      opacity:.95;
+      user-select:none;
+    }
+    .mini{
+      font-size:14px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--bd);
+      background:transparent;
+      color:inherit;
+      cursor:pointer;
+    }
+    body.dark .mini{
+      border-color:var(--bd-dark);
+      background:rgba(255,255,255,0.03);
+    }
+
+    .wheelSearchRow{
+      display:flex;
+      gap:8px;
+      padding:6px;
+      border-bottom:1px solid var(--bd);
+    }
+    body.dark .wheelSearchRow{ border-bottom-color:var(--bd-dark); }
+
+    .wheelSearch{
+      flex:1;
+      border:1px solid var(--bd);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:14px;
+      background:transparent;
+      color:inherit;
+      outline:none;
+    }
+    body.dark .wheelSearch{ border-color:var(--bd-dark); }
+
+    .wheelArea{ position:relative; padding:12px 12px 2px; }
+    .wheelViewport{
+      position:relative;
+      height:calc(var(--wheel-item-h) * 7);
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      scroll-snap-type:y mandatory;
+      overscroll-behavior:contain;
+      border-radius:16px;
+      border:1px solid var(--bd);
+      background:rgba(0,0,0,0.02);
+      touch-action:pan-y;
+    }
+    body.dark .wheelViewport{
+      border-color:var(--bd-dark);
+      background:rgba(255,255,255,0.03);
+    }
+    .wheelFadeTop,.wheelFadeBottom{
+      pointer-events:none;
+      position:absolute;
+      left:12px; right:12px;
+      height:44px;
+      z-index:2;
+    }
+    .wheelFadeTop{ top:12px; background:linear-gradient(to bottom,var(--wheel-fade),rgba(255,255,255,0)); }
+    .wheelFadeBottom{ bottom:2px; background:linear-gradient(to top,var(--wheel-fade),rgba(255,255,255,0)); }
+    body.dark .wheelFadeTop{ background:linear-gradient(to bottom,var(--wheel-fade-dark),rgba(15,17,21,0)); }
+    body.dark .wheelFadeBottom{ background:linear-gradient(to top,var(--wheel-fade-dark),rgba(15,17,21,0)); }
+
+    .wheelList{ padding:calc(var(--wheel-item-h)*3) 0; margin:0; list-style:none; }
+    .wheelItem{
+      height:var(--wheel-item-h);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      scroll-snap-align:center;
+      user-select:none;
+      padding:0 14px;
+    }
+    .wheelItemInner{
+      width:100%;
+      max-width:92%;
+      text-align:left;
+      padding:8px 10px;
+      border-radius:14px;
+      border:1px solid transparent;
+      line-height:1.15;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+      display:grid;
+      grid-template-columns:3.2em 1fr;
+      column-gap:10px;
+      align-items:center;
+    }
+    .wheelItemInner .num{
+      font-size:12px;
+      opacity:.70;
+      font-variant-numeric:tabular-nums;
+      user-select:none;
+    }
+    .wheelItemInner .main{ font-size:18px; font-weight:500; }
+    .wheelItemInner .ja{
+      display:block;
+      font-size:12px;
+      opacity:.70;
+      margin-top:2px;
+      line-height:1.2;
+    }
+    .wheelItem.isActive .wheelItemInner{
+      border-color:rgba(100,116,139,0.25);
+      background:rgba(100,116,139,0.06);
+    }
+
+    .wheelHint{
+      font-size:12px;
+      opacity:.75;
+      padding:0 12px 10px;
+      user-select:none;
+      min-height:1.2em;
+    }
+    .wheelFooter{
+      display:flex;
+      gap:10px;
+      padding:8px;
+      border-top:1px solid var(--bd);
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    body.dark .wheelFooter{ border-top-color:var(--bd-dark); }
   </style>
 </head>
 
@@ -610,7 +607,6 @@
 
     <div class="row">
       <div class="rangeWrap">
-        <!-- 上段：範囲 + Auto -->
         <div class="rangeTop">
           <label class="badge rangeBadge">
             No
@@ -622,7 +618,6 @@
           <button class="small toggle" id="autoBtn" type="button">▶︎ Auto</button>
         </div>
 
-        <!-- 下段：現在の単語No（Autoの下に来る） -->
         <div class="rangeNow">
           <span class="word-no">No</span>
           <span id="wordNumHeader" class="word-num-header"></span>
@@ -659,10 +654,9 @@
       </div>
     </div>
 
-    <!-- ✅ 探すボタンの下段：time（1行に収める） -->
     <div class="row autoTimeRow">
       <div class="badge autoTimeBadge">
-        ▶︎ 
+        ▶︎
         <span class="miniLbl">英</span>
         <input id="autoEnMs" class="msInput" type="number" min="200" max="9999" step="100">
         <span class="unit">ms</span>
@@ -671,12 +665,9 @@
         <input id="autoJaMs" class="msInput" type="number" min="200" max="9999" step="100">
         <span class="unit">ms</span>
       </div>
-
       <button class="small miniBtn reviewUI pressWhite" id="autoTimeResetBtn" type="button">初期値</button>
     </div>
 
-
-    <!-- ✅ WakeLockステータス -->
     <div class="wakeBadge" id="wakeBadge" title="Auto中はスリープしにくくします（対応ブラウザのみ）">
       <span class="wakeDot off" id="wakeDot"></span>
       <span id="wakeText">Wake: OFF</span>
@@ -699,7 +690,6 @@
       <div class="wheelArea">
         <div class="wheelFadeTop"></div>
         <div class="wheelFadeBottom"></div>
-        <div class="wheelCenterLine"></div>
 
         <div class="wheelViewport" id="wheelViewport">
           <ul class="wheelList" id="wheelList"></ul>
@@ -709,18 +699,14 @@
       <div class="wheelHint" id="wheelHint"></div>
 
       <div class="wheelFooter">
-        <button class="mini" id="wheelMoreBtn" type="button">さらに表示</button>
-
-        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; margin-left:auto;">
-          <button class="mini" id="wheelJumpBtn" type="button">この単語へ移動</button>
-        </div>
+        <button class="mini" id="wheelJumpBtn" type="button">この単語へ移動</button>
       </div>
     </div>
   </div>
 
 <script>
 /* =========================
-   ✅ VOCAB（あなたのデータに置換）
+   VOCAB（あなたのデータに置換）
 ========================= */
 const VOCAB = [
   { en: "want to ~", ja: "～したい" },
@@ -728,423 +714,59 @@ const VOCAB = [
   { en: "have to ~", ja: "～しなければならない" },
   { en: "It is ~ to ...", ja: "…するのは～だ" },
   { en: "come to ~", ja: "～に来る" },
-  { en: "look at ~", ja: "～を見る" },
-  { en: "talk about ~", ja: "～について話す" },
-  { en: "be going to ~", ja: "～するつもりである" },
-  { en: "try to ~", ja: "～しようと努める" },
-  { en: "one of ~", ja: "～のうちの1つ" },
-  { en: "how to ~", ja: "どのように～したらよいか" },
-  { en: "enjoy ~ing", ja: "～することを楽しむ" },
-  { en: "think about ~", ja: "～のことを考える" },
-  { en: "talk with ~", ja: "～と話す" },
-  { en: "live in ~", ja: "～に住む" },
-  { en: "begin to ~", ja: "～し始める" },
-  { en: "want ~ to ...", ja: "～に…してもらいたい" },
-  { en: "for example", ja: "たとえば" },
-  { en: "I see.", ja: "なるほど" },
-  { en: "every day", ja: "毎日" },
-  { en: "from ~ to ...", ja: "～から…まで" },
-  { en: "very much", ja: "たいへん" },
-  { en: "tell ~ to ...", ja: "～に…するように言う" },
-  { en: "in the future", ja: "将来（は）" },
-  { en: "How about ~?", ja: "～はどうですか" },
-  { en: "decide to ~", ja: "～することを決心する" },
-  { en: "need to ~", ja: "～する必要がある" },
-  { en: "take ~ to ...", ja: "～を…に連れて行く" },
-  { en: "a lot", ja: "たくさん" },
-  { en: "Of course.", ja: "もちろん" },
-  { en: "listen to ~", ja: "～を聴く" },
-  { en: "more than ~", ja: "～より多くの" },
-  { en: "be interested in ~", ja: "～に興味がある" },
-  { en: "be able to ~", ja: "～することができる" },
-  { en: "ask ~ to ...", ja: "～に...するように頼む" },
-  { en: "one day", ja: "ある日" },
-  { en: "a few ~", ja: "少しの～" },
-  { en: "each other", ja: "お互い" },
-  { en: "a little (~)", ja: "少しの（～）" },
-  { en: "look for ~", ja: "～を探す" },
-  { en: "some of ~", ja: "～のいくつか" },
-  { en: "talk to ~", ja: "～に話しかける" },
-  { en: "start to ~", ja: "～し始める" },
-  { en: "Can you ~?", ja: "～してもらえますか" },
-  { en: "Can I ~?", ja: "～してもいいですか" },
-  { en: "~ year(s) old", ja: "～歳" },
-  { en: "at home", ja: "家で" },
-  { en: "in front of ~", ja: "～の前に" },
-  { en: "because of ~", ja: "～のために" },
-  { en: "take care of ~", ja: "～の世話をする" },
-  { en: "thank ~ for ...", ja: "～に…のことを感謝する" },
-  { en: "make ~ of ...", ja: "…から～をつくる" },
-  { en: "as ~ as ...", ja: "…と同じくらい～" },
-  { en: "learn about ~", ja: "～について学ぶ" },
-  { en: "in the morning", ja: "朝に" },
-  { en: "stop ~ing", ja: "～するのをやめる" },
-  { en: "at first", ja: "最初（は）" },
-  { en: "come back to ~", ja: "（～に）戻る" },
-  { en: "keep on ~ing", ja: "～し続ける" },
-  { en: "Will you ~?", ja: "～してくれませんか" },
-  { en: "at school", ja: "学校で" },
-  { en: "like to ~", ja: "～することが好きだ" },
-  { en: "go ~ing", ja: "～しに行く" },
-  { en: "would like to ~", ja: "～したいと思う" },
-  { en: "out of ~", ja: "～から、～の外に［へ］" },
-  { en: "what to ~", ja: "何を～したらよいか" },
-  { en: "part of ~", ja: "～の一部、～の部分" },
-  { en: "so ~ that ...", ja: "とても～なので..." },
-  { en: "think of ~", ja: "～を思いつく、～のことを考える" },
-  { en: "stay in ~", ja: "～に滞在する" },
-  { en: "between ~ and ...", ja: "～と...の間を" },
-  { en: "That's right.", ja: "そのとおりです" },
-  { en: "come from ~", ja: "～の出身である" },
-  { en: "for the first time", ja: "初めて" },
-  { en: "get to ~", ja: "～に着く" },
-  { en: "all of ~", ja: "～のみんな" },
-  { en: "go back to ~", ja: "（～）戻る" },
-  { en: "the number of ~", ja: "～の数" },
-  { en: "last year", ja: "昨年" },
-  { en: "around the world", ja: "世界中の" },
-  { en: "All right.", ja: "よろしい" },
-  { en: "many kinds of ~", ja: "たくさんの種類の～" },
-  { en: "such as ~", ja: "…のような～" },
-  { en: "after school", ja: "放課後" },
-  { en: "be happy to ~", ja: "～してうれしい" },
-  { en: "wait for ~", ja: "～を待つ" },
-  { en: "both ~ and ...", ja: "～も…も両方とも" },
-  { en: "for a long time", ja: "長い間" },
-  { en: "the next day", ja: "次の日" },
-  { en: "How long ~?", ja: "どのくらい（の間）～" },
-  { en: "without ~ing", ja: "～しないで" },
-  { en: "in fact", ja: "実は" },
-  { en: "put ~ in ...", ja: "～を…に入れる" },
-  { en: "Why don't you ~?", ja: "～してはどうですか" },
-  { en: "take a picture", ja: "写真を撮る" },
-  { en: "in the afternoon", ja: "午後に" },
-  { en: "How many ~?", ja: "いくつの～?" },
-  { en: "all over ~", ja: "～中の" },
-  { en: "come and ~", ja: "～しに来る" },
-  { en: "at night", ja: "夜に" },
-  { en: "be born", ja: "生まれる" },
-  { en: "worry about ~", ja: "～を心配する" },
-  { en: "give up ~", ja: "（～を）あきらめる" },
-  { en: "too ~ to ...", ja: "あまりに～なので…できない" },
-  { en: "go out", ja: "外出する" },
-  { en: "be surprised to ~", ja: "～して驚く" },
-  { en: "most of ~", ja: "～のほとんど" },
-  { en: "next to ~", ja: "～のとなりに" },
-  { en: "get up", ja: "起きる" },
-  { en: "on the internet", ja: "インターネットで" },
-  { en: "What time ~?", ja: "何時（に）～?" },
-  { en: "look like ~", ja: "～のように見える" },
-  { en: "finish ~ing", ja: "～し終える" },
-  { en: "go to school", ja: "学校に行く" },
-  { en: "have a good time", ja: "楽しく過ごす" },
-  { en: "no one ~", ja: "だれも～ない" },
-  { en: "Could you ~?", ja: "～していただけますか" },
-  { en: "different from ~", ja: "～と違った" },
-  { en: "speak to ~", ja: "～に話しかける" },
-  { en: "at that time", ja: "そのとき" },
-  { en: "play ~ with ...", ja: "…と～をする" },
-  { en: "come home", ja: "帰宅する" },
-  { en: "Would you like ~?", ja: "～はいかがですか" },
-  { en: "go on (~ing)", ja: "続く" },
-  { en: "look forward to ~", ja: "～を楽しみにして待つ" },
-  { en: "on TV", ja: "テレビで" },
-  { en: "go home", ja: "家に帰る" },
-  { en: "away from ~", ja: "～から離れて" },
-  { en: "help ~ with ...", ja: "…のことで～を手伝う" },
-  { en: "do one's best", ja: "最善をつくす" },
-  { en: "agree with ~", ja: "～に同意する" },
-  { en: "thanks to ~", ja: "～のおかげで" },
-  { en: "by oneself", ja: "ひとりで" },
-  { en: "hear about ~", ja: "～について聞く" },
-  { en: "Shall we ~?", ja: "（一緒に）～しましょうか" },
-  { en: "find out", ja: "～を発見する" },
-  { en: "go to bed", ja: "寝る" },
-  { en: "many times", ja: "何度も" },
-  { en: "the way to ~", ja: "～への道" },
-  { en: "be good at ~", ja: "～が得意である" },
-  { en: "stay at ~", ja: "～に泊まる" },
-  { en: "walk to ~", ja: "歩いて～に行く" },
-  { en: "arrive at ~", ja: "～に着く" },
-  { en: "be glad to ~", ja: "～してうれしい" },
-  { en: "next time", ja: "この次は" },
-  { en: "be afraid of ~", ja: "～をこわがる" },
-  { en: "a member of ~", ja: "～の一員" },
-  { en: "continue to ~", ja: "～し続ける" },
-  { en: "make a mistake", ja: "間違える" },
-  { en: "get well", ja: "回復する" },
-  { en: "seem to ~", ja: "～のように思われる" },
-  { en: "by the way", ja: "ところで" },
-  { en: "get off ~", ja: "（～を）降りる" },
-  { en: "~ enough to ...", ja: "…するのに十分なほどの～" },
-  { en: "this time", ja: "今回は" },
-  { en: "up to ~", ja: "～まで" },
-  { en: "at the same time", ja: "同時に" },
-  { en: "pick up ~", ja: "～を拾い上げる" },
-  { en: "stay with ~", ja: "～の家に泊まる" },
-  { en: "go into ~", ja: "～に入る" },
-  { en: "You're welcome.", ja: "どういたしまして" },
-  { en: "a piece of ~", ja: "1切れの～" },
-  { en: "like ~ the best", ja: "～がいちばん好きだ" },
-  { en: "more and more", ja: "ますます" },
-  { en: "do one's homework", ja: "宿題をする" },
-  { en: "at the end of ~", ja: "～の終わりに" },
-  { en: "go down ~", ja: "～を降りる" },
-  { en: "sit down", ja: "すわる" },
-  { en: "be sure (that)", ja: "～だと確信している" },
-  { en: "be used to ~", ja: "～に慣れている" },
-  { en: "grow up", ja: "成長する" },
-  { en: "May I ~?", ja: "～してもいいですか" },
-  { en: "get better", ja: "（より）よくなる" },
-  { en: "half of ~", ja: "～の半分" },
-  { en: "communicate with ~", ja: "～と連絡をとり合う" },
-  { en: "hope to ~", ja: "～することを望む" },
-  { en: "How much ~?", ja: "いくら～?" },
-  { en: "since then", ja: "それ以来" },
-  { en: "each of ~", ja: "～のそれぞれ" },
-  { en: "not only ~ but ...", ja: "～ばかりでなく…もまた" },
-  { en: "used to ~", ja: "～したものだ" },
-  { en: "both of ~", ja: "～の両方とも" },
-  { en: "lots of ~", ja: "たくさんの～" },
-  { en: "put ~ into ...", ja: "～を…に入れる" },
-  { en: "these days", ja: "最近" },
-  { en: "say to oneself", ja: "心の中で思う" },
-  { en: "be kind to ~", ja: "～に親切である" },
-  { en: "than before", ja: "以前よりも" },
-  { en: "in order to ~", ja: "～するために" },
-  { en: "learn to ~", ja: "～できるようになる" },
-  { en: "look up ~", ja: "～を調べる" },
-  { en: "May I help you?", ja: "いらっしゃいませ" },
-  { en: "take part in ~", ja: "～に参加する" },
-  { en: "try ~ing", ja: "ためしに～してみる" },
-  { en: "happen to ~", ja: "～に起こる" },
-  { en: "instead of ~", ja: "～のかわりに" },
-  { en: "be moved (by ~)", ja: "（～に）感動する" },
-  { en: "even if ~", ja: "たとえ～であっても" },
-  { en: "for a while", ja: "しばらくの間" },
-  { en: "come true", ja: "実現する" },
-  { en: "share ~ with ...", ja: "…と～を共有する" },
-  { en: "far from ~", ja: "～から遠い" },
-  { en: "in the evening", ja: "夕方に" },
-  { en: "again and again", ja: "何度も何度も" },
-  { en: "at least", ja: "少なくとも" },
-  { en: "do with ~", ja: "～を処理する" },
-  { en: "go up", ja: "上がる" },
-  { en: "on one's way to ~", ja: "（～に行く）途中で" },
-  { en: "walk around ~", ja: "（～を）散歩する" },
-  { en: "a kind of ~", ja: "～の一種" },
-  { en: "all day long", ja: "一日中" },
-  { en: "in this way", ja: "このようにして" },
-  { en: "as ~ as one can", ja: "できるだけ～" },
-  { en: "come in", ja: "入る" },
-  { en: "work on ~", ja: "～に取り組む" },
-  { en: "at last", ja: "ついに" },
-  { en: "far away", ja: "遠くに" },
-  { en: "Here you are.", ja: "はい、どうぞ" },
-  { en: "move around ~", ja: "（～を）動きまわる" },
-  { en: "have a chance to ~", ja: "～する機会がある" },
-  { en: "for oneself", ja: "自分のために" },
-  { en: "smile at ~", ja: "～にほほえみかける" },
-  { en: "not as ~ as ...", ja: "…ほど～でない" },
-  { en: "wake up", ja: "目が覚める" },
-  { en: "~ and so on", ja: "～など" },
-  { en: "go away", ja: "立ち去る" },
-  { en: "study abroad", ja: "留学する" },
-  { en: "~ as well as ...", ja: "…と同様に～も" },
-  { en: "a long time ago", ja: "ずっと昔に" },
-  { en: "get on ~", ja: "（～に）乗る" },
-  { en: "It takes ~ to ...", ja: "…するのに～（時間）がかかる" },
-  { en: "make ~ from ...", ja: "…から～をつくる" },
-  { en: "make a speech", ja: "演説する" },
-  { en: "pay for ~", ja: "～の代金を払う" },
-  { en: "as soon as ~", ja: "～するとすぐに" },
-  { en: "be proud of ~", ja: "～を誇りに思う" },
-  { en: "in the air", ja: "空中に" },
-  { en: "on the way to ~", ja: "（～への）途中で" },
-  { en: "take out ~", ja: "～を取り出す" },
-  { en: "be over", ja: "終わる" },
-  { en: "go abroad", ja: "外国に行く" },
-  { en: "Good luck.", ja: "がんばってね" },
-  { en: "leave home", ja: "家を出る" },
-  { en: "no longer ~", ja: "もはや～でない" },
-  { en: "with a smile", ja: "ほほえみながら" },
-  { en: "come into ~", ja: "～に入ってくる" },
-  { en: "depend on ~", ja: "～に頼る" },
-  { en: "live on ~", ja: "～で生活する" },
-  { en: "over there", ja: "向こうに" },
-  { en: "Shall I ~?", ja: "私が～しましょうか" },
-  { en: "get angry with ~", ja: "～に怒る" },
-  { en: "as ~ as possible", ja: "できるだけ～" },
-  { en: "hear of ~", ja: "～のことを聞く" },
-  { en: "How old ~?", ja: "何歳～?" },
-  { en: "in addition to ~", ja: "～に加えて" },
-  { en: "put on ~", ja: "～を着る" },
-  { en: "the same ~ as ...", ja: "…と同じ～" },
-  { en: "thousands of ~", ja: "何千もの～" },
-  { en: "look around ~", ja: "～を見回す" },
-  { en: "run away", ja: "逃げる" },
-  { en: "throw away ~", ja: "～を捨てる" },
-  { en: "be famous for ~", ja: "～で有名である" },
-  { en: "do well", ja: "うまくいく" },
-  { en: "leave ~ for ...", ja: "～に向けて…を出発する" },
-  { en: "soon after ~", ja: "～の直後に" },
-  { en: "stand up", ja: "立ち上がる" },
-  { en: "Come on.", ja: "さあ" },
-  { en: "not very ~", ja: "あまり～ない" },
-  { en: "~ than any other ...", ja: "ほかのどの…よりも～" },
-  { en: "be worried about ~", ja: "～のことを心配している" },
-  { en: "long ago", ja: "ずっと前に" },
-  { en: "right now", ja: "今すぐ" },
-  { en: "be full of ~", ja: "～でいっぱいである" },
-  { en: "get home", ja: "帰宅する" },
-  { en: "get out of ~", ja: "～から出る" },
-  { en: "introduce ~ to ...", ja: "～を…に紹介する" },
-  { en: "so ~ that ... can't ...", ja: "とても～なので…できない" },
-  { en: "together with ~", ja: "～と一緒に" },
-  { en: "be made of ~", ja: "～でできている" },
-  { en: "come out", ja: "出てくる" },
-  { en: "come up", ja: "近づく" },
-  { en: "forget to ~", ja: "～することを忘れる" },
-  { en: "get married", ja: "結婚する" },
-  { en: "graduate from ~", ja: "～を卒業する" },
-  { en: "prepare for ~", ja: "～の準備をする" },
-  { en: "Would you ~?", ja: "～していただけますか" },
-  { en: "arrive in ~", ja: "～に着く" },
-  { en: "come out of ~", ja: "～から出る" },
-  { en: "go around ~", ja: "～を回る" },
-  { en: "go through ~", ja: "～を通り抜ける" },
-  { en: "have a party", ja: "パーティーを開く" },
-  { en: "after a while", ja: "しばらくして" },
-  { en: "be made in ~", ja: "～でつくられる" },
-  { en: "be ready to ~", ja: "～する準備ができている" },
-  { en: "change ~ into ...", ja: "～を…に変える" },
-  { en: "not ~ at all", ja: "少しも～ない" },
-  { en: "all the time", ja: "いつも" },
-  { en: "have fun", ja: "楽しむ" },
-  { en: "on the other hand", ja: "他方では" },
-  { en: "millions of ~", ja: "何百万もの～" },
-  { en: "show ~ around ...", ja: "～を…に案内する" },
-  { en: "turn off ~", ja: "～を消す" },
-  { en: "leave for ~", ja: "～に向けて出発する" },
-  { en: "just then", ja: "ちょうどそのとき" },
-  { en: "must not ~", ja: "～してはいけない" },
-  { en: "any time", ja: "いつでも" },
-  { en: "at once", ja: "すぐに" },
-  { en: "hundreds of ~", ja: "何百もの～" },
-  { en: "in the end", ja: "ついに" },
-  { en: "some time", ja: "いつか" },
-  { en: "stay home", ja: "家にいる" },
-  { en: "this way", ja: "こんなふうに" },
-  { en: "be made from ~", ja: "～からつくられる" },
-  { en: "be popular among ~", ja: "～の間で人気がある" },
-  { en: "take a bath", ja: "ふろに入る" },
-  { en: "take off ~", ja: "～を脱ぐ" },
-  { en: "a cup of ~", ja: "1杯の～" },
-  { en: "cut down ~", ja: "～を切り倒す" },
-  { en: "encourage ~ to ...", ja: "～に…するようにすすめる" },
-  { en: "in the middle of ~", ja: "～のまん中に" },
-  { en: "leave a message", ja: "伝言を残す" },
-  { en: "look after ~", ja: "～の世話をする" },
-  { en: "sound like ~", ja: "～のように聞こえる" },
-  { en: "spend ~ on ...", ja: "～を…に使う" },
-  { en: "What's wrong with ~?", ja: "～はどうしましたか" },
-  { en: "be out", ja: "外出している" },
-  { en: "care about ~", ja: "～に気を配る" },
-  { en: "fall down", ja: "倒れる" },
-  { en: "not ~ but ...", ja: "～ではなく…だ" },
-  { en: "on one's left", ja: "左側に" },
-  { en: "on one's right", ja: "右側に" },
-  { en: "on the phone", ja: "電話に出ている" },
-  { en: "suffer from ~", ja: "～で苦しむ" },
-  { en: "the other day", ja: "先日" },
-  { en: "be covered with ~", ja: "～でおおわれている" },
-  { en: "laugh at ~", ja: "～を笑う" },
-  { en: "on time", ja: "時間どおりに" },
-  { en: "some day", ja: "いつか" },
-  { en: "write to ~", ja: "～に手紙を書く" },
-  { en: "for a moment", ja: "ちょっとの間に" },
-  { en: "get into ~", ja: "～に乗りこむ" },
-  { en: "go by", ja: "過ぎ去る" },
-  { en: "hear from ~", ja: "～から便りがある" },
-  { en: "hold on", ja: "電話を切らずにおく" },
-  { en: "It says that ~", ja: "～と書いてある" },
-  { en: "May I speak to ~?", ja: "～さんをお願いします" },
-  { en: "take away ~", ja: "～を片づける" },
-  { en: "believe in ~", ja: "～を信じる" },
-  { en: "belong to ~", ja: "～に属する" },
-  { en: "bring back ~", ja: "～を持ち帰る" },
-  { en: "How often ~?", ja: "何回～?" },
-  { en: "in need", ja: "必要としている" },
-  { en: "in time", ja: "間に合って" },
-  { en: "make friends with ~", ja: "～と友だちになる" },
-  { en: "make up ~", ja: "～をつくりあげる" },
-  { en: "point to ~", ja: "～をさす" },
-  { en: "remember ~ing", ja: "～したことを覚えている" },
-  { en: "walk along ~", ja: "～に沿って歩く" },
-  { en: "have no idea", ja: "わからない" },
-  { en: "look back", ja: "ふり返って見る" },
-  { en: "at the table", ja: "食事中に" },
-  { en: "be surprised at ~", ja: "～に驚く" },
-  { en: "get back", ja: "戻る" },
-  { en: "have been to ~", ja: "～へ行ったことがある" },
-  { en: "look into ~", ja: "～の中をのぞく" },
-  { en: "run into ~", ja: "～にたまたま出会う" },
-  { en: "see a doctor", ja: "医者に診てもらう" },
-  { en: "take a message", ja: "伝言を受ける" },
-  { en: "after all", ja: "結局" },
-  { en: "all around ~", ja: "～のいたるところに" },
-  { en: "be close to ~", ja: "～の近くにある" },
-  { en: "change trains", ja: "列車を乗り換える" },
-  { en: "feel sorry for ~", ja: "～に申し訳なく感じる" },
-  { en: "go to sleep", ja: "眠る" },
-  { en: "How many times ~?", ja: "何回～?" },
-  { en: "like ~ better than ...", ja: "…よりも～が好きだ" },
-  { en: "look out", ja: "外を見る" },
-  { en: "not ~ yet", ja: "まだ～ない" },
-  { en: "return ~ to ...", ja: "～を…に返す" },
-  { en: "look down ~", ja: "～を見下ろす" },
-  { en: "start with ~", ja: "～から始める" },
-  { en: "be impressed with ~", ja: "～に感動する" },
-  { en: "for some time", ja: "しばらくの間" },
-  { en: "take a walk", ja: "散歩する" },
-  { en: "clean up ~", ja: "～をきれいにする" },
-  { en: "of one's own", ja: "自分自身の" },
-  { en: "turn around", ja: "ふり返る" },
-  { en: "be filled with ~", ja: "～でいっぱいである" },
-  { en: "be ready for ~", ja: "～の準備ができている" },
-  { en: "get together", ja: "集まる" },
-  { en: "Anything else?", ja: "ほかに何かありますか" },
-  { en: "exchange ~ with ...", ja: "～を…と交換する" },
-  { en: "fight for ~", ja: "～のために戦う" },
-  { en: "hand in ~", ja: "～を提出する" },
-  { en: "help yourself", ja: "自分で取って食べる" },
-  { en: "in those days", ja: "その当時は" },
-  { en: "little by little", ja: "少しずつ" },
-  { en: "make money", ja: "お金をかせぐ" },
-  { en: "tell ~ from ...", ja: "～を…と見分ける" },
+  // ...（省略：あなたのVOCABをそのまま置いてOK）
   { en: "a number of ~", ja: "多数の～" }
 ];
+
 /* =========================
-   ユーティリティ
+   Utils
 ========================= */
 const $ = (id) => document.getElementById(id);
+
 const LS = {
   get(key, fallback){
     try{
       const v = localStorage.getItem(key);
-      return v === null ? fallback : JSON.parse(v);
-    }catch(e){
-      return fallback;
-    }
+      return v == null ? fallback : JSON.parse(v);
+    }catch{ return fallback; }
   },
   set(key, value){
-    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
+    try{ localStorage.setItem(key, JSON.stringify(value)); }catch{}
   }
 };
-function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 
 /* =========================
-   要素
+   Voice utility（英語音声選択）
+========================= */
+function pickEnglishVoice(){
+  const voices = speechSynthesis.getVoices() || [];
+  return (
+    voices.find(v => v.lang === "en-US" && /Ava/i.test(v.name)) ||
+    voices.find(v => v.lang === "en-US") ||
+    voices.find(v => v.lang.startsWith("en-"))
+  ) || null;
+}
+
+let cachedEnglishVoice = null;
+
+if ("speechSynthesis" in window) {
+  speechSynthesis.onvoiceschanged = () => {
+    cachedEnglishVoice = pickEnglishVoice();
+  };
+}
+
+const toInt = (v, fallback) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.trunc(n) : fallback;
+};
+const escapeHtml = (s) => String(s ?? "")
+  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;").replaceAll("'","&#39;");
+
+/* =========================
+   Elements
 ========================= */
 const pageTitle = $("pageTitle");
 const progressEl = $("progress");
@@ -1173,165 +795,181 @@ const rangeTo = $("rangeTo");
 const wheelOpenBtn = $("wheelOpenBtn");
 const speakBtn = $("speakBtn");
 
-/* 速度UI */
 const rateRange = $("rateRange");
 const rateLabel = $("rateLabel");
 
-/* ✅ Auto表示時間UI */
 const autoEnMsInput = $("autoEnMs");
 const autoJaMsInput = $("autoJaMs");
 const autoTimeResetBtn = $("autoTimeResetBtn");
 
-/* Wake lock UI */
 const wakeBadge = $("wakeBadge");
 const wakeDot = $("wakeDot");
 const wakeText = $("wakeText");
 
-/* wheel modal */
+/* wheel */
 const wheelOverlay = $("wheelOverlay");
 const wheelCloseBtn = $("wheelCloseBtn");
 const wheelSearchInput = $("wheelSearchInput");
 const wheelClearSearchBtn = $("wheelClearSearchBtn");
 const wheelList = $("wheelList");
 const wheelViewport = $("wheelViewport");
-const wheelMoreBtn = $("wheelMoreBtn");
 const wheelJumpBtn = $("wheelJumpBtn");
 const wheelHint = $("wheelHint");
 
 /* =========================
-   状態（phase方式）
+   State
+   - APPごとのlocalStorage衝突を避けるため title をキー化
 ========================= */
 const APP_ID  = (document.title || "vocab").replace(/\s+/g, "_");
 const APP_KEY = `ei_idiom_state_v3__${APP_ID}`;
 
 const state = {
   idx: 0,
-  orderRandom: true,
+  orderRandom: false,
   audioOn: true,
   dark: false,
-  wrongSet: {},
+
+  wrongSet: {},      // { realIndex: true }
+  wrongOnly: false,
 
   rangeFrom: 1,
-  rangeTo: Math.min(10, VOCAB.length),
-  shuffled: [],
-  wrongOnly: false,
+  rangeTo: VOCAB.length,
+
+  shuffled: [],      // 実index配列（範囲＆復習で作る）
+  started: false,
+  phase: 0,          // 0:英/出題, 1:日/答え
 
   rate: 1.0,
 
-  started: false,
-  phase: 0,     // 0:出題  1:答え
-
-  autoOn: false, // ✅ Auto運転中か
-
-  /* ✅ Auto表示時間（ms） */
+  autoOn: false,
   autoEnMs: 1500,
   autoJaMs: 1000,
 
-  vocabLen: VOCAB.length,
-
+  vocabLen: VOCAB.length
 };
 
 function loadState(){
   const saved = LS.get(APP_KEY, null);
   if(!saved) return;
 
-  if(typeof saved.idx === "number") state.idx = saved.idx;
-  if(typeof saved.orderRandom === "boolean") state.orderRandom = saved.orderRandom;
-  if(typeof saved.audioOn === "boolean") state.audioOn = saved.audioOn;
-  if(typeof saved.dark === "boolean") state.dark = saved.dark;
+  const b = (k, t) => (typeof saved[k] === t);
+  if(b("idx","number")) state.idx = saved.idx;
+  if(b("orderRandom","boolean")) state.orderRandom = saved.orderRandom;
+  if(b("audioOn","boolean")) state.audioOn = saved.audioOn;
+  if(b("dark","boolean")) state.dark = saved.dark;
   if(saved.wrongSet && typeof saved.wrongSet === "object") state.wrongSet = saved.wrongSet;
-  if(typeof saved.rangeFrom === "number") state.rangeFrom = saved.rangeFrom;
-  if(typeof saved.rangeTo === "number") state.rangeTo = saved.rangeTo;
+  if(b("wrongOnly","boolean")) state.wrongOnly = saved.wrongOnly;
+
+  if(b("rangeFrom","number")) state.rangeFrom = saved.rangeFrom;
+  if(b("rangeTo","number")) state.rangeTo = saved.rangeTo;
+
   if(Array.isArray(saved.shuffled)) state.shuffled = saved.shuffled;
-  if(typeof saved.wrongOnly === "boolean") state.wrongOnly = saved.wrongOnly;
-  if(typeof saved.rate === "number") state.rate = saved.rate;
 
-  if(typeof saved.started === "boolean") state.started = saved.started;
-  if(typeof saved.phase === "number") state.phase = saved.phase;
+  if(b("started","boolean")) state.started = saved.started;
+  if(b("phase","number")) state.phase = saved.phase;
 
-  if(typeof saved.autoOn === "boolean") state.autoOn = saved.autoOn;
+  if(b("rate","number")) state.rate = saved.rate;
 
-  if(typeof saved.autoEnMs === "number") state.autoEnMs = saved.autoEnMs;
-  if(typeof saved.autoJaMs === "number") state.autoJaMs = saved.autoJaMs;
+  if(b("autoOn","boolean")) state.autoOn = saved.autoOn;
+  if(b("autoEnMs","number")) state.autoEnMs = saved.autoEnMs;
+  if(b("autoJaMs","number")) state.autoJaMs = saved.autoJaMs;
 
-    // ✅ 語数が違うアプリ/更新なら、範囲や順番を安全に初期化
-  if (typeof saved.vocabLen === "number" && saved.vocabLen !== VOCAB.length) {
+  /* 語数が違うアプリ/更新なら安全に初期化 */
+  if(typeof saved.vocabLen === "number" && saved.vocabLen !== VOCAB.length){
     state.idx = 0;
     state.started = false;
     state.phase = 0;
     state.wrongSet = {};
     state.wrongOnly = false;
     state.rangeFrom = 1;
-    state.rangeTo = VOCAB.length;   // ← 起動時は 1〜総数 にしたいならこれ
+    state.rangeTo = VOCAB.length;
     state.shuffled = [];
   }
 
-  // 現在の語数を記録
   state.vocabLen = VOCAB.length;
-
 }
-function saveState(){ LS.set(APP_KEY, state); }
 
+function saveState(){
+  LS.set(APP_KEY, state);
+}
+
+/* =========================
+   Order / Range
+========================= */
 function inRangeIndices(){
-  const a = clamp((state.rangeFrom|0), 1, VOCAB.length);
-  const b = clamp((state.rangeTo|0), 1, VOCAB.length);
-  const lo = Math.min(a,b);
-  const hi = Math.max(a,b);
+  const a = clamp(toInt(state.rangeFrom, 1), 1, VOCAB.length);
+  const b = clamp(toInt(state.rangeTo, VOCAB.length), 1, VOCAB.length);
+  const lo = Math.min(a, b);
+  const hi = Math.max(a, b);
   const arr = [];
-  for(let i=lo-1;i<=hi-1;i++) arr.push(i);
+  for(let i = lo - 1; i <= hi - 1; i++) arr.push(i);
   return arr;
 }
+
 function shuffle(arr){
   const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 }
+
 function buildOrder(){
   const base = inRangeIndices();
-
-  let pool = base;
-  if(state.wrongOnly){
-    pool = base.filter(i => state.wrongSet[i]);
-  }
+  const pool = state.wrongOnly ? base.filter(i => state.wrongSet[i]) : base;
 
   if(pool.length === 0){
     state.shuffled = [];
     state.idx = 0;
     return;
   }
-
   state.shuffled = state.orderRandom ? shuffle(pool) : pool;
   state.idx = 0;
 }
+
 function currentRealIndex(){
   if(state.shuffled.length === 0) return null;
-  return state.shuffled[clamp(state.idx, 0, state.shuffled.length-1)];
+  return state.shuffled[clamp(state.idx, 0, state.shuffled.length - 1)];
+}
+
+function syncRangeConstraints(){
+  rangeFrom.max = String(state.rangeTo);
+  rangeTo.min   = String(state.rangeFrom);
+
+  rangeFrom.value = String(state.rangeFrom);
+  rangeTo.value   = String(state.rangeTo);
 }
 
 /* =========================
-   発音（速度対応）
+   Speech
 ========================= */
 function speak(text){
   if(!state.audioOn) return;
   if(!("speechSynthesis" in window)) return;
 
-  try{ window.speechSynthesis.cancel(); }catch(e){}
+  try{ speechSynthesis.cancel(); }catch(e){}
+
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "en-US";
-  u.rate = clamp(Number(state.rate) || 1.0, 0.1, 10);
-  window.speechSynthesis.speak(u);
+  u.rate = clamp(Number(state.rate) || 1.0, 0.6, 1.4);
+
+  if (cachedEnglishVoice) {
+    u.voice = cachedEnglishVoice; // ★ここが効く
+  }
+
+  speechSynthesis.speak(u);
 }
+
+
 function speakCurrent(){
   const real = currentRealIndex();
-  if(real === null) return;
+  if(real == null) return;
   speak(VOCAB[real].en);
 }
 
 /* =========================
-   ✅ Wake Lock（スリープ対策）
+   Wake Lock
 ========================= */
 let wakeLockSentinel = null;
 let wakeKeepAliveTimer = 0;
@@ -1341,16 +979,13 @@ function setWakeUI(on, reason){
   wakeDot.classList.toggle("on", !!on);
   wakeDot.classList.toggle("off", !on);
   wakeText.textContent = on ? "Wake: ON" : "Wake: OFF";
-  if(reason && state.autoOn){
-    wakeBadge.title = reason;
-  }
+  if(reason && state.autoOn) wakeBadge.title = reason;
 }
 
 async function requestWakeLock(){
   setWakeUI(false, "WakeLockを取得中…");
-
   try{
-    if("wakeLock" in navigator && navigator.wakeLock && navigator.wakeLock.request){
+    if("wakeLock" in navigator && navigator.wakeLock?.request){
       wakeLockSentinel = await navigator.wakeLock.request("screen");
       setWakeUI(true, "WakeLock: Screen Wake Lock APIで維持中");
 
@@ -1362,25 +997,18 @@ async function requestWakeLock(){
           setWakeUI(false, "WakeLock: OFF");
         }
       });
-
       return;
     }
-  }catch(e){
-    // フォールバックへ
-  }
+  }catch{}
 
+  /* iPhone Safari等のフォールバック（擬似 keep-alive） */
   clearInterval(wakeKeepAliveTimer);
   wakeKeepAliveTimer = setInterval(() => { void Date.now(); }, 25_000);
-
   setWakeUI(false, "このブラウザはWakeLock非対応の可能性があります（iPhone Safari等）。Auto中は時々画面をタップすると維持しやすいです。");
 }
 
 async function releaseWakeLock(){
-  try{
-    if(wakeLockSentinel){
-      await wakeLockSentinel.release();
-    }
-  }catch(e){}
+  try{ if(wakeLockSentinel) await wakeLockSentinel.release(); }catch{}
   wakeLockSentinel = null;
 
   if(wakeKeepAliveTimer){
@@ -1398,7 +1026,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 /* =========================
-   UI更新
+   Render / UI
 ========================= */
 function updateAutoBtn(){
   autoBtn.textContent = state.autoOn ? "⏸ Auto" : "▶︎ Auto";
@@ -1406,25 +1034,18 @@ function updateAutoBtn(){
 
 function updateTopUI(){
   const total = state.shuffled.length;
-
-  if(!state.started){
-    progressEl.textContent = `0 / ${total}`;
-  }else{
-    const cur = total ? (state.idx + 1) : 0;
-    progressEl.textContent = `${cur} / ${total}`;
-  }
+  const cur = (!state.started || !total) ? 0 : (state.idx + 1);
+  progressEl.textContent = `${cur} / ${total}`;
 
   const real = currentRealIndex();
-  wordNumHeader.textContent = (!state.started || real === null) ? "" : String(real + 1);
-
-  rangeFrom.value = String(state.rangeFrom);
-  rangeTo.value = String(state.rangeTo);
+  wordNumHeader.textContent = (!state.started || real == null) ? "" : String(real + 1);
 
   wrongOnlyToggle.checked = !!state.wrongOnly;
   orderToggle.textContent = state.orderRandom ? "🔀" : "🔢";
   audioToggle.textContent = state.audioOn ? "🔊" : "🔇";
   themeToggle.textContent = state.dark ? "🌙" : "☀️";
 
+  /* 復習カウント：範囲内の復習数 */
   const base = inRangeIndices();
   const cnt = base.filter(i => state.wrongSet[i]).length;
   wrongCount.textContent = `(${cnt})`;
@@ -1432,10 +1053,10 @@ function updateTopUI(){
   rateRange.value = String(state.rate);
   rateLabel.textContent = `${state.rate.toFixed(1)}x`;
 
-  // ✅ Auto時間UI
   autoEnMsInput.value = String(state.autoEnMs);
   autoJaMsInput.value = String(state.autoJaMs);
 
+  syncRangeConstraints();
   updateAutoBtn();
 }
 
@@ -1445,11 +1066,11 @@ function render(){
   const real = currentRealIndex();
   updateTopUI();
 
-  if(real !== null){
+  if(real != null){
     missToggle.checked = !!state.wrongSet[real];
   }
 
-  if(real === null){
+  if(real == null){
     wordTextEl.textContent = "リストが空です";
     meaningEl.textContent = "範囲を広げるか、「復習」をOFFにするか、復習リストを登録してね";
     nextBtn.textContent = "はじめる";
@@ -1474,23 +1095,29 @@ function render(){
   const item = VOCAB[real];
   wordTextEl.textContent = item.en;
 
-  if(state.phase === 0){
-    meaningEl.textContent = "";
-    nextBtn.textContent = "日本語訳を確認（答え合わせ）";
-    missBox.classList.remove("show");
-  }else{
-    meaningEl.textContent = item.ja;
-    nextBtn.textContent = "正解だったかな？ 次の単語へ！";
-    missBox.classList.add("show");
-    missToggle.checked = !!state.wrongSet[real];
-  }
+if(state.phase === 0){
+  meaningEl.textContent = "";
+  nextBtn.textContent = "日本語訳を確認（答え合わせ）";
+}else{
+  meaningEl.textContent = item.ja;
+  nextBtn.textContent = "正解だったかな？ 次の単語へ！";
+}
+
+/* ★ 常時表示 */
+missBox.classList.add("show");
+
+/* ★ チェック状態は常に現在の単語に同期 */
+missToggle.checked = !!state.wrongSet[real];
+
 
   saveState();
 }
 
 /* =========================
-   操作（2段階）
+   Manual controls
 ========================= */
+let autoTimer = 0;
+
 function stopAuto(){
   state.autoOn = false;
   if(autoTimer) clearTimeout(autoTimer);
@@ -1501,10 +1128,10 @@ function stopAuto(){
 }
 
 function startOrAdvance(){
-  stopAuto(); // ✅ 手動操作でAuto停止
+  stopAuto();
 
   const real = currentRealIndex();
-  if(real === null) { render(); return; }
+  if(real == null){ render(); return; }
 
   if(!state.started){
     state.started = true;
@@ -1520,11 +1147,7 @@ function startOrAdvance(){
     return;
   }
 
-  if(state.idx >= state.shuffled.length - 1){
-    state.idx = 0;
-  }else{
-    state.idx++;
-  }
+  state.idx = (state.idx >= state.shuffled.length - 1) ? 0 : state.idx + 1;
   state.phase = 0;
   render();
   speakCurrent();
@@ -1542,62 +1165,34 @@ function hardReset(){
 function clearWrong(){
   stopAuto();
   state.wrongSet = {};
-  buildOrder();
   state.idx = 0;
   state.started = false;
   state.phase = 0;
+  buildOrder();
   render();
 }
 
-function applyFromInput(){
+function applyRangeFromInputs(){
   stopAuto();
 
-  let from = Number(rangeFrom.value || 1);
-  let to   = Number(rangeTo.value   || 1);
+  let from = clamp(toInt(rangeFrom.value, 1), 1, VOCAB.length);
+  let to   = clamp(toInt(rangeTo.value, VOCAB.length), 1, VOCAB.length);
 
-  from = clamp(from, 1, VOCAB.length);
-
-  // ✅ 〇は □ を超えられない
+  /* ルール：from > to を許さない */
   if(from > to) from = to;
 
   state.rangeFrom = from;
-  rangeFrom.value = String(from);
+  state.rangeTo   = to;
 
   buildOrder();
-  state.idx = 0;
   state.started = false;
   state.phase = 0;
   render();
 }
-
-function applyToInput(){
-  stopAuto();
-
-  let from = Number(rangeFrom.value || 1);
-  let to   = Number(rangeTo.value   || 1);
-
-  to = clamp(to, 1, VOCAB.length);
-
-  // ✅ □ は 〇 未満にできない
-  if(to < from) to = from;
-
-  state.rangeTo = to;
-  rangeTo.value = String(to);
-
-  buildOrder();
-  state.idx = 0;
-  state.started = false;
-  state.phase = 0;
-  render();
-}
-
-
 
 /* =========================
-   ✅ Auto運転（表示時間をUIで変更）
+   Auto
 ========================= */
-let autoTimer = 0;
-
 function scheduleAuto(ms){
   if(autoTimer) clearTimeout(autoTimer);
   autoTimer = setTimeout(autoTick, ms);
@@ -1605,7 +1200,7 @@ function scheduleAuto(ms){
 
 function startAuto(){
   const real = currentRealIndex();
-  if(real === null) return;
+  if(real == null) return;
 
   state.autoOn = true;
   updateAutoBtn();
@@ -1621,13 +1216,12 @@ function autoTick(){
   if(!state.autoOn) return;
 
   const real = currentRealIndex();
-  if(real === null){
+  if(real == null){
     stopAuto();
     render();
     return;
   }
 
-  // 未開始なら開始（英語表示）→英の時間待つ
   if(!state.started){
     state.started = true;
     state.phase = 0;
@@ -1637,7 +1231,6 @@ function autoTick(){
     return;
   }
 
-  // 英語 → 和訳（和の時間待つ）
   if(state.phase === 0){
     state.phase = 1;
     render();
@@ -1645,81 +1238,48 @@ function autoTick(){
     return;
   }
 
-  // 和訳 → 次の英語（英の時間待つ）
-  if(state.idx >= state.shuffled.length - 1){
-    state.idx = 0;
-  }else{
-    state.idx++;
-  }
+  state.idx = (state.idx >= state.shuffled.length - 1) ? 0 : state.idx + 1;
   state.phase = 0;
   render();
   speakCurrent();
   scheduleAuto(state.autoEnMs);
 }
 
-/* =========================
-   ✅ Auto時間UI処理
-========================= */
+/* Auto時間UI */
 function sanitizeMs(v, min, max, fallback){
   const n = Number(v);
   if(!Number.isFinite(n)) return fallback;
   return clamp(Math.round(n), min, max);
 }
 
-autoEnMsInput.addEventListener("change", () => {
-  stopAuto();
-  state.autoEnMs = sanitizeMs(autoEnMsInput.value, 200, 10000, 1500);
-  autoEnMsInput.value = String(state.autoEnMs);
-  saveState();
-});
-
-autoJaMsInput.addEventListener("change", () => {
-  stopAuto();
-  state.autoJaMs = sanitizeMs(autoJaMsInput.value, 200, 20000, 1000);
-  autoJaMsInput.value = String(state.autoJaMs);
-  saveState();
-});
-
-autoTimeResetBtn.addEventListener("click", () => {
-  stopAuto();
-  state.autoEnMs = 1500;
-  state.autoJaMs = 1000;
-  autoEnMsInput.value = String(state.autoEnMs);
-  autoJaMsInput.value = String(state.autoJaMs);
-  saveState();
-});
-
 /* =========================
-   Wheel（検索）
+   Wheel (Search)
+   - 範囲内(＋復習ONなら復習内)だけ候補にする
 ========================= */
 let wheelFiltered = [];
-let wheelShown = 0;
 let wheelActiveIndex = 0;
-const WHEEL_BATCH = 9999;
 let wheelSnapTimer = 0;
 
+function wheelCandidateIndices(){
+  const base = inRangeIndices();
+  return state.wrongOnly ? base.filter(i => state.wrongSet[i]) : base;
+}
 function wheelMatch(q, item){
   if(!q) return true;
   const s = q.toLowerCase();
   return (item.en || "").toLowerCase().includes(s) || (item.ja || "").toLowerCase().includes(s);
 }
-function escapeHtml(s){
-  return String(s ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
+
 function updateWheelHint(){
   const total = wheelFiltered.length;
-  wheelHint.textContent = (total === 0) ? "該当なし" : `${total}件 / 表示 ${wheelShown}件`;
-  wheelMoreBtn.style.display = (wheelShown >= wheelFiltered.length) ? "none" : "";
+  wheelHint.textContent = (total === 0) ? "該当なし" : `${total}件`;
 }
+
 function wheelUpdateActiveClass(){
   const items = wheelList.querySelectorAll(".wheelItem");
   items.forEach((li, idx) => li.classList.toggle("isActive", idx === wheelActiveIndex));
 }
+
 function wheelScrollToIndex(i, smooth){
   const items = wheelList.querySelectorAll(".wheelItem");
   if(!items.length) return;
@@ -1733,33 +1293,29 @@ function wheelScrollToIndex(i, smooth){
   wheelActiveIndex = idx;
   wheelUpdateActiveClass();
 }
+
 function wheelPickNearest(){
   const items = wheelList.querySelectorAll(".wheelItem");
   if(!items.length) return 0;
 
   const centerY = wheelViewport.scrollTop + wheelViewport.clientHeight / 2;
+  let best = 0, bestDist = Infinity;
 
-  let best = 0;
-  let bestDist = Infinity;
   items.forEach((el, i) => {
     const y = el.offsetTop + el.offsetHeight / 2;
     const d = Math.abs(y - centerY);
-    if(d < bestDist){
-      bestDist = d;
-      best = i;
-    }
+    if(d < bestDist){ bestDist = d; best = i; }
   });
   return best;
 }
+
 function wheelSnap(){
-  const i = wheelPickNearest();
-  wheelScrollToIndex(i, true);
+  wheelScrollToIndex(wheelPickNearest(), true);
 }
+
 function renderWheelItems(){
   wheelList.innerHTML = "";
-  const slice = wheelFiltered.slice(0, wheelShown);
-
-  slice.forEach((v, idx) => {
+  wheelFiltered.forEach((v, idx) => {
     const li = document.createElement("li");
     li.className = "wheelItem";
     li.dataset.index = String(idx);
@@ -1775,30 +1331,24 @@ function renderWheelItems(){
     wheelList.appendChild(li);
   });
 
-  wheelActiveIndex = clamp(wheelActiveIndex, 0, Math.max(0, slice.length - 1));
+  wheelActiveIndex = clamp(wheelActiveIndex, 0, Math.max(0, wheelFiltered.length - 1));
   wheelUpdateActiveClass();
 }
+
 function rebuildWheelList(){
   const q = (wheelSearchInput.value || "").trim();
-
-  // ✅ 範囲内だけを検索対象にする
   const candidates = wheelCandidateIndices();
 
   wheelFiltered = candidates
-    .map(i => ({ ...VOCAB[i], i }))    // i は元VOCABの実index
+    .map(i => ({ ...VOCAB[i], i }))
     .filter(v => wheelMatch(q, v));
 
-  wheelShown = wheelFiltered.length;
   wheelActiveIndex = 0;
-
   renderWheelItems();
   updateWheelHint();
   wheelViewport.scrollTop = 0;
 
-  requestAnimationFrame(() => {
-    wheelActiveIndex = 0;
-    wheelScrollToIndex(0, false);
-  });
+  requestAnimationFrame(() => wheelScrollToIndex(0, false));
 }
 
 function openWheel(){
@@ -1806,7 +1356,6 @@ function openWheel(){
   wheelOverlay.classList.add("show");
   wheelOverlay.setAttribute("aria-hidden", "false");
   wheelSearchInput.value = "";
-  wheelShown = 0;
   wheelActiveIndex = 0;
   rebuildWheelList();
   setTimeout(()=>wheelSearchInput.focus(), 50);
@@ -1815,21 +1364,15 @@ function closeWheel(){
   wheelOverlay.classList.remove("show");
   wheelOverlay.setAttribute("aria-hidden", "true");
 }
-function wheelMore(){
-  wheelShown = Math.min(wheelShown + WHEEL_BATCH, wheelFiltered.length);
-  renderWheelItems();
-  updateWheelHint();
-}
 function wheelJumpToSelected(){
   stopAuto();
-
   if(wheelFiltered.length === 0) return;
+
   const picked = wheelFiltered[wheelActiveIndex];
   if(!picked) return;
 
   const pos = state.shuffled.indexOf(picked.i);
   if(pos < 0){
-    // ✅ ここに来るなら「ホイールが範囲外を出している」など想定外
     wheelHint.textContent = "この単語は現在の範囲にありません（範囲を広げてください）";
     return;
   }
@@ -1840,23 +1383,11 @@ function wheelJumpToSelected(){
   render();
   closeWheel();
 }
-function wheelCandidateIndices(){
-  // 現在の「No 〜」範囲だけを候補にする
-  const base = inRangeIndices();
-
-  // もし「復習」ON中なら、復習対象だけに絞りたいならこれも有効
-  // （好みで。復習中でも通常検索したいなら削除）
-  if(state.wrongOnly){
-    return base.filter(i => state.wrongSet[i]);
-  }
-  return base;
-}
 
 /* =========================
-   イベント
+   Events
 ========================= */
 nextBtn.addEventListener("click", startOrAdvance);
-
 resetBtn.addEventListener("click", hardReset);
 clearWrongBtn.addEventListener("click", clearWrong);
 
@@ -1869,7 +1400,6 @@ wrongOnlyToggle.addEventListener("change", () => {
   stopAuto();
   state.wrongOnly = wrongOnlyToggle.checked;
   buildOrder();
-  state.idx = 0;
   state.started = false;
   state.phase = 0;
   render();
@@ -1877,20 +1407,19 @@ wrongOnlyToggle.addEventListener("change", () => {
 
 missToggle.addEventListener("change", () => {
   const real = currentRealIndex();
-  if(real === null) return;
+  if(real == null) return;
 
   if(missToggle.checked) state.wrongSet[real] = true;
   else delete state.wrongSet[real];
 
-  updateTopUI();
-  saveState();
+  render(); // count更新も含める
 });
 
 audioToggle.addEventListener("click", () => {
   stopAuto();
   state.audioOn = !state.audioOn;
   if(!state.audioOn){
-    try{ window.speechSynthesis.cancel(); }catch(e){}
+    try{ window.speechSynthesis.cancel(); }catch{}
   }
   render();
 });
@@ -1906,36 +1435,57 @@ orderToggle.addEventListener("click", () => {
   stopAuto();
   state.orderRandom = !state.orderRandom;
   buildOrder();
-  state.idx = 0;
   state.started = false;
   state.phase = 0;
   render();
 });
 
-// ======== イベント ========
-rangeFrom.addEventListener("change", applyFromInput);
-rangeTo.addEventListener("change", applyToInput);
+/* range */
+rangeFrom.addEventListener("change", applyRangeFromInputs);
+rangeTo.addEventListener("change", applyRangeFromInputs);
 
+/* rate */
 rateRange.addEventListener("input", () => {
   state.rate = Number(rateRange.value);
   rateLabel.textContent = `${state.rate.toFixed(1)}x`;
   saveState();
 });
 
-// 発音ボタン（いつでもOK）
+/* speak */
 speakBtn.addEventListener("click", () => {
   stopAuto();
   const real = currentRealIndex();
-  if(real === null) return;
+  if(real == null) return;
   speak(VOCAB[real].en);
 });
 
-// wheel
+/* auto time */
+autoEnMsInput.addEventListener("change", () => {
+  stopAuto();
+  state.autoEnMs = sanitizeMs(autoEnMsInput.value, 200, 10000, 1500);
+  autoEnMsInput.value = String(state.autoEnMs);
+  saveState();
+});
+autoJaMsInput.addEventListener("change", () => {
+  stopAuto();
+  state.autoJaMs = sanitizeMs(autoJaMsInput.value, 200, 20000, 1000);
+  autoJaMsInput.value = String(state.autoJaMs);
+  saveState();
+});
+autoTimeResetBtn.addEventListener("click", () => {
+  stopAuto();
+  state.autoEnMs = 1500;
+  state.autoJaMs = 1000;
+  autoEnMsInput.value = String(state.autoEnMs);
+  autoJaMsInput.value = String(state.autoJaMs);
+  saveState();
+});
+
+/* wheel */
 wheelOpenBtn.addEventListener("click", openWheel);
 wheelCloseBtn.addEventListener("click", closeWheel);
 wheelClearSearchBtn.addEventListener("click", () => { wheelSearchInput.value = ""; rebuildWheelList(); });
 wheelSearchInput.addEventListener("input", rebuildWheelList);
-wheelMoreBtn.addEventListener("click", wheelMore);
 wheelJumpBtn.addEventListener("click", wheelJumpToSelected);
 
 wheelList.addEventListener("click", (e) => {
@@ -1945,57 +1495,56 @@ wheelList.addEventListener("click", (e) => {
   if(!Number.isFinite(idx)) return;
   wheelScrollToIndex(idx, true);
 });
+
 wheelViewport.addEventListener("scroll", () => {
   clearTimeout(wheelSnapTimer);
   wheelSnapTimer = setTimeout(() => {
     if (wheelOverlay.classList.contains("show")) wheelSnap();
   }, 140);
-}, { passive: true });
+}, { passive:true });
 
 wheelOverlay.addEventListener("click", (e) => { if(e.target === wheelOverlay) closeWheel(); });
 document.addEventListener("keydown", (e) => { if(e.key === "Escape" && wheelOverlay.classList.contains("show")) closeWheel(); });
 
 /* =========================
-   初期化
+   Init
 ========================= */
 (function init(){
-  rangeTo.max = String(VOCAB.length);
+  rangeFrom.min = "1";
+  rangeTo.min = "1";
   rangeFrom.max = String(VOCAB.length);
+  rangeTo.max = String(VOCAB.length);
 
   loadState();
 
-  state.rangeFrom = clamp(state.rangeFrom, 1, VOCAB.length);
-  state.rangeTo   = clamp(state.rangeTo,   1, VOCAB.length);
-
-  document.body.classList.toggle("dark", state.dark);
+  /* clamp */
+  state.rangeFrom = clamp(toInt(state.rangeFrom, 1), 1, VOCAB.length);
+  state.rangeTo   = clamp(toInt(state.rangeTo, VOCAB.length), 1, VOCAB.length);
+  if(state.rangeFrom > state.rangeTo) state.rangeFrom = state.rangeTo;
 
   state.rate = clamp(Number(state.rate) || 1.0, 0.6, 1.4);
-  rateRange.value = String(state.rate);
-  rateLabel.textContent = `${state.rate.toFixed(1)}x`;
-
-  // ✅ Auto時間の補正
   state.autoEnMs = clamp(Number(state.autoEnMs) || 1500, 200, 10000);
   state.autoJaMs = clamp(Number(state.autoJaMs) || 1000, 200, 20000);
 
+  document.body.classList.toggle("dark", state.dark);
+
+  /* order */
   if(!Array.isArray(state.shuffled) || state.shuffled.length === 0){
     buildOrder();
   }else{
     const base = new Set(inRangeIndices());
     const ok = state.shuffled.every(i => base.has(i));
     if(!ok) buildOrder();
-    state.idx = clamp(state.idx, 0, state.shuffled.length - 1);
+    state.idx = clamp(state.idx, 0, Math.max(0, state.shuffled.length - 1));
   }
 
-  // ✅ 再読み込みで勝手にAuto開始しない（安全）
+  /* safety: reloadでAuto勝手に開始しない */
   state.autoOn = false;
   if(autoTimer) clearTimeout(autoTimer);
   autoTimer = 0;
-  updateAutoBtn();
   setWakeUI(false, "WakeLock: OFF");
 
-  rangeFrom.max = String(state.rangeTo);
-  rangeTo.min   = String(state.rangeFrom);
-
+  syncRangeConstraints();
   render();
 })();
 </script>
