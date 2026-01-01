@@ -743,7 +743,7 @@ const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 function pickEnglishVoice(){
   const voices = speechSynthesis.getVoices() || [];
   return (
-    voices.find(v => v.lang === "en-US" && /Ava/i.test(v.name)) ||
+    voices.find(v => v.lang === "en-US" && /Alex/i.test(v.name)) ||
     voices.find(v => v.lang === "en-US") ||
     voices.find(v => v.lang.startsWith("en-"))
   ) || null;
